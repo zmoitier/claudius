@@ -1,0 +1,113 @@
+% arara: indent: {overwrite: yes}
+% arara: pdflatex: {draft: yes}
+% arara: pdflatex
+% arara: clean: { extensions: [ log ], files: [ indent ] }
+% arara: clean: { extensions: [ aux, bak, log, toc, out ]}
+
+\documentclass[12pt,a4paper]{article}
+
+
+% Usepackages =============================================
+% Standard et geometrie -----------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[margin=2cm]{geometry}
+
+%Liens et dessins -----------------------------------------
+\usepackage[colorlinks]{hyperref}
+\usepackage{tikz}
+
+% Maths ---------------------------------------------------
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{mathtools,mathrsfs}
+
+
+% Couleurs ================================================
+% definecolor ---------------------------------------------
+\definecolor{coGB}{HTML}{1F77B4}
+\definecolor{coOr}{HTML}{FF7F0E}
+\definecolor{coWG}{HTML}{2CA02C}
+\definecolor{coAR}{HTML}{D62728}
+\definecolor{cMBP}{HTML}{9467BD}
+\definecolor{coSM}{HTML}{8C564B}
+\definecolor{coPP}{HTML}{E377C2}
+\definecolor{coTG}{HTML}{7F7F7F}
+\definecolor{coAG}{HTML}{BCBD22}
+\definecolor{coBB}{HTML}{17BECF}
+% hypersetup ----------------------------------------------
+\hypersetup{
+    colorlinks = True,
+    linkcolor  = coAR,
+    citecolor  = coWG,
+    urlcolor   = coGB,
+}
+
+
+% Maths ===================================================
+% mathbb --------------------------------------------------
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbN}{\mathbb{N}}
+\newcommand{\bbR}{\mathbb{R}}
+\newcommand{\bbS}{\mathbb{S}}
+\newcommand{\bbZ}{\mathbb{Z}}
+
+% mathcal --------------------------------------------------
+\newcommand{\calV}{\mathcal{V}}
+
+% mathscr --------------------------------------------------
+\newcommand{\scrC}{\mathscr{C}}
+
+% mathrm --------------------------------------------------
+\newcommand{\rmL}{\mathrm{L}}
+\newcommand{\rmH}{\mathrm{H}}
+
+% Constants -----------------------------------------------
+\newcommand{\ex}{\mathsf{e}}
+\newcommand{\im}{\mathsf{i}}
+
+% Fontions ------------------------------------------------
+
+
+% Operateurs ----------------------------------------------
+\newcommand{\di}[1]{\mathop{}\!\mathrm{d}#1}
+\DeclareMathOperator{\OO}{\mathcal{O}}
+\DeclareMathOperator{\oo}{\mathcal{\scriptstyle O}}
+\DeclareMathOperator{\Div}{div}
+\DeclareMathOperator{\Rot}{\mathbf{curl}}
+
+% Symboles ------------------------------------------------
+\newcommand{\plr}[1]{\left(#1\right)}
+\newcommand{\clr}[1]{\left[#1\right]}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+% Vecteurs ------------------------------------------------
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+
+
+% Titre ===================================================
+\title{Scattering by rotationally invariant cavities}
+\author{Zoïs \textsc{Moitier}}
+
+
+%==========================================================
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%============================
+\section{Problem settings}
+%============================
+
+%============================
+\section{Disk cavities}
+%============================
+
+%============================
+\section{Annulus cavities}
+%============================
+
+\end{document}
