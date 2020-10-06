@@ -1,6 +1,8 @@
-% arara: indent: {overwrite: yes}
-% arara: pdflatex: {draft: yes}
-% arara: pdflatex
+% arara: indent: {overwrite: yes, modifylinebreaks: yes}
+% arara: pdflatex: {draft: yes, shell : yes}
+% arara: bibtex
+% arara: pdflatex: {draft: yes, shell : yes}
+% arara: pdflatex: {shell : yes}
 % arara: clean: { extensions: [ log ], files: [ indent ] }
 % arara: clean: { extensions: [ aux, bak, log, toc, out ]}
 
@@ -14,13 +16,13 @@
 \usepackage[english]{babel}
 \usepackage[margin=2cm]{geometry}
 
-%Liens et dessins -----------------------------------------
-\usepackage[colorlinks]{hyperref}
-\usepackage{tikz}
-
 % Maths ---------------------------------------------------
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
 \usepackage{mathtools,mathrsfs}
+
+%Liens et dessins -----------------------------------------
+\usepackage[colorlinks]{hyperref}
+\usepackage{tikz}
 
 
 % Couleurs ================================================
@@ -46,13 +48,17 @@
 
 % Maths ===================================================
 % mathbb --------------------------------------------------
+\newcommand{\bbA}{\mathbb{A}}
 \newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
 \newcommand{\bbN}{\mathbb{N}}
 \newcommand{\bbR}{\mathbb{R}}
 \newcommand{\bbS}{\mathbb{S}}
+\newcommand{\bbT}{\mathbb{T}}
 \newcommand{\bbZ}{\mathbb{Z}}
 
 % mathcal --------------------------------------------------
+\newcommand{\calD}{\mathcal{D}}
 \newcommand{\calV}{\mathcal{V}}
 
 % mathscr --------------------------------------------------
@@ -67,7 +73,11 @@
 \newcommand{\im}{\mathsf{i}}
 
 % Fontions ------------------------------------------------
-
+\newcommand{\bJ}{\mathop{}\!\mathsf{J}}
+\newcommand{\bY}{\mathop{}\!\mathsf{Y}}
+\newcommand{\Hu}{\mathop{}\!\mathsf{H}^{(1)}}
+\newcommand{\Hd}{\mathop{}\!\mathsf{H}^{(2)}}
+\newcommand{\bI}{\mathop{}\!\mathsf{I}}
 
 % Operateurs ----------------------------------------------
 \newcommand{\di}[1]{\mathop{}\!\mathrm{d}#1}
@@ -76,7 +86,7 @@
 \DeclareMathOperator{\Div}{div}
 \DeclareMathOperator{\Rot}{\mathbf{curl}}
 
-% Symboles ------------------------------------------------
+% delimiters ----------------------------------------------
 \newcommand{\plr}[1]{\left(#1\right)}
 \newcommand{\clr}[1]{\left[#1\right]}
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
@@ -84,6 +94,16 @@
 
 % Vecteurs ------------------------------------------------
 \newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\vx}{\boldsymbol{x}}
+
+% Keywords ------------------------------------------------
+\newcommand{\eps}{\varepsilon}
+\newcommand{\comp}{\mathrm{comp}}
+\newcommand{\loc}{\mathrm{loc}}
+\newcommand{\inc}{\mathsf{in}}
+\newcommand{\sca}{\mathsf{sc}}
+\newcommand{\ecav}{\varepsilon_\mathsf{c}}
+\newcommand{\mcav}{\mu_\mathsf{c}}
 
 
 % Titre ===================================================
@@ -96,18 +116,177 @@
 
 \maketitle
 
+\begin{abstract}
+    We solve scattering problem by rotationally invariant cavities.
+    The shape consider are disk and annulus where the permittivity and permeability are radial function.
+\end{abstract}
+
 \tableofcontents
 
 %============================
-\section{Problem settings}
+\section{The scattering problem}
 %============================
 
+% = = = = = = = = = = = = = =
+\subsection{Problem statement}
+% = = = = = = = = = = = = = =
+
+Let $\bbD = \{\vx \in \bbR^2 \mid |\vx| < 1\}$ be the unit disk and $\bbA_\delta = \{\vx \in \bbR^2 \mid \delta < |\vx| < 1\}$ an annulus of width $\delta > 0$.
+The cavity $\Omega$ denote either $\bbD$ or $\bbA_\delta$ and the interface $\Gamma = \partial\Omega$ is the boundary of $\Omega$.
+We define the function $\eps \in \rmL^\infty(\bbR^2)$ (permittivity) and $\mu \in \rmL^\infty(\bbR^2)$ (permeability) as
+\[
+    \eps(\vx) = \begin{dcases}
+        \ecav(|\vx|) & \text{if } \vx \in \overline{\Omega}\\
+        1 & \text{otherwise}
+    \end{dcases} \qquad
+    \text{and} \qquad
+    \mu(\vx) = \begin{dcases}
+        \mcav(|\vx|) & \text{if } \vx \in \overline{\Omega}\\
+        1 & \text{otherwise}
+    \end{dcases}
+\]
+where $\ecav, \mcav \in \scrC^\infty(\overline{I}, \bbR^*)$ with $I = (0,1)$ or $I = (\delta, 1)$.
+Let $\calD^2 \coloneqq \{u \in \rmL^2(\bbR^2) \mid \Div(\eps^{-1} \nabla u) \in \rmL^2(\bbR^2)\}$ be the domain of the operator $u \mapsto -\mu^{-1}\Div(\eps^{-1} \nabla u)$ and we define the ``loc'' version
+\[
+    \calD_\loc^2 \coloneqq \{u \in \rmL_\loc^2(\bbR^2) \mid \forall \chi \in \scrC_\comp^\infty(\bbR^2),\ \chi u \in \calD^2\}.
+\]
+
+We define the following scattering problem: Given a wavenumber $k > 0$ and an incident field $u^\inc : \vx \mapsto \ex^{\im\, k\, y}$, find the scattering field $u^\sca \in \calD_\loc^2$ such that the total field $u = u^\inc + u^\sca$ satisfy
+\begin{subequations}\label{prob:scattering}
+\begin{equation}\label{eq:scat_pde}
+    \begin{dcases}
+        -\mu^{-1}\Div\plr{\eps^{-1} \nabla u} - k^2 u = 0 & \text{in } \Omega \text{ and } \bbR^2 \setminus \overline{\Omega}\\[1ex]
+        \clr{u}_\Gamma = 0 \ \text{and}\ \clr{\eps^{-1} \partial_{\vect{\nu}} u}_\Gamma = 0 & \text{across } \Gamma\\[1ex]
+        \text{$u^\sca$ is $k$-outgoing} 
+    \end{dcases}
+\end{equation}
+where $\vect{\nu} : \Gamma \to \bbS^1$ is the exterior unit normal and $u^\sca$ is $k$-outgoing mean that for $|\vx| \ge 1$, there exist $(c_m)_{m \in \bbZ} \in \ell^2(\bbZ)$ such that
+\begin{equation}\label{eq:OWC}
+    u^\sca(\vx) = \sum_{m \in \bbZ} c_m\, \Hu_m(k\, r)\, \ex^{\im\, m\, \theta}
+\end{equation}
+with $(r, \theta) \in \bbR_+ \times \bbR / 2\pi\bbZ$ the polar coordinate associated to the Cartesian coordinates $\vx \in \bbR^2$ and $z \mapsto \Hu_m(z)$ is the Hankel function of the first kind of order $m$.
+\end{subequations}
+
+% = = = = = = = = = = = = = =
+\subsection{1D reduction}
+% = = = = = = = = = = = = = =
+
+We look for solution of problem \eqref{prob:scattering} of the form
+\[
+    u(\vx) = \sum_{m \in \bbZ} w_m(r)\, \ex^{\im\, m\, \theta} \qquad
+    \text{where } w_m(r) \coloneqq \frac{1}{2\pi} \int_0^{2\pi} u(r,\theta)\, \ex^{-\im\, m\, \theta} \di{\theta}.
+\]
+Similarly we write $u^\inc(\vx) = \sum_{m \in \bbZ} w_m^\inc(r)\, \ex^{\im\, m\, \theta}$ and $u^\sca(\vx) = \sum_{m \in \bbZ} w_m^\sca(r)\, \ex^{\im\, m\, \theta}$.
+For the incident field, we have $w_m^\inc(r) = \bJ_m(k\, r)$ because the Jacobi-Anger expansion \cite[Eq.~10.12.1]{NIST:DLMF} states that
+\begin{equation}\label{eq:JacobiAngerExpansion}
+    u^\inc(\vx) = \ex^{\im k\, y} = \sum_{m \in \bbZ} \bJ_m(k\, r)\, \ex^{\im\, m\, \theta}
+\end{equation}
+where $z \mapsto \bJ_m(z)$ is the Bessel function of the first kind.
+The series in equation \eqref{eq:JacobiAngerExpansion} converges absolutely on every compact set of $\bbR^2$.
+
+The domain of the operator $w \mapsto -r^{-1}\, \mu^{-1} \partial_r(r\, \eps^{-1} \partial_r w) + m^2\, r^{-2}\, \eps^{-1}\mu^{-1} w$ and its ``loc'' version are define by
+\begin{align*}
+    \calD^{1, m} &\coloneqq \{w \in \rmL^2(\bbR_+^*, r\di{r}) \mid \partial_r(r\, \eps^{-1}\, \partial_r w) - m^2\, r^{-1}\eps^{-1} w \in \rmL^2(\bbR_+^*)\}\\
+    \calD^{1, m}_\loc &\coloneqq \{w \in \rmL^2(\bbR_+^*, r\di{r}) \mid \forall \chi \in \scrC_\comp^\infty(\bbR),\ \chi w \in \calD^{1, m}\}.
+\end{align*}
+
+Problem \ref{prob:scattering} reduce to a family of problem index by $m \in \bbZ$: Given $k > 0$ find $w_m^\sca \in \calD^{1, m}_\loc$ such that $w_m = w_m^\inc + w_m^\sca$ and
+\begin{equation}\label{prob:w_scattering}
+     \begin{dcases}
+        -\frac{1}{r\, \mu} \partial_r\plr{\frac{r}{\eps}\, \partial_r w_m} + \dfrac{m^2}{r^2\, \eps\mu} w_m - k^2\, w_m = 0 & \text{in } I \text{ and } \bbR^* \setminus \overline{I}      \\
+        w_0'(0) = 0 & \text{on } \{0\}       \\
+        \clr{w_m}_{\{1\}} = 0 \quad\text{and}\quad \clr{\eps^{-1}\, w_m'}_{\{1\}} = 0              & \text{across } \{1\}   \\
+        w_m^\sca(r) \propto \Hu_m(k\, r)                                                              & r \ge 1
+    \end{dcases}
+\end{equation}
+with $\propto$ meaning ``up to a multiplicative constant''.
+
 %============================
-\section{Disk cavities}
+\section{The resonances problem}
 %============================
+
+% = = = = = = = = = = = = = =
+\subsection{Problem statement}
+% = = = = = = = = = = = = = =
+
+% = = = = = = = = = = = = = =
+\subsection{1D reduction}
+% = = = = = = = = = = = = = =
+
+%============================
+\section{Disk cavities with constant optical parameters}
+%============================
+
+% = = = = = = = = = = = = = =
+\subsection{Solution of the scattering problem}
+% = = = = = = = = = = = = = =
+
+In this section, we assume that the cavity is the unit disk $\bbD$ and that $\ecav$ and $\mcav$ are non zero constant in $[0, 1]$.
+The solution of problem \eqref{prob:w_scattering} for $0 < r < 1$ depend of the sign of $\ecav\mcav$.
+We denote by $C_m$ the function
+\[
+    C_m(z) = \begin{dcases}
+        \bJ_m(\sqrt{\ecav\mcav}\, z) & \text{if } \ecav\mcav > 0\\
+        \bI_m(\sqrt{-\ecav\mcav}\, z) & \text{if } \ecav\mcav < 0
+    \end{dcases}
+\]
+where $z \mapsto \bI_m(z)$ is the modified Bessel of the first kind.
+The solution of problem \eqref{prob:w_scattering} is
+\begin{equation}
+    w_m(r) = \begin{dcases}
+        \alpha_m\, C_m(k\, r) & \text{if } r \le 1\\
+        \beta_m\, \Hu_m(k\, r) + \bJ_m(k\, r) & \text{if } r > 1
+    \end{dcases}
+\end{equation}
+where $(\alpha_m, \beta_m)$ are solution of
+\begin{equation}
+    \begin{pmatrix*}[r]
+        C_m(k) & -\Hu_m(k)\\[1ex]
+        \ecav^{-1}\, C_m'(k) & -{\Hu_m}'(k)
+    \end{pmatrix*}
+    \begin{pmatrix}
+        \alpha_m\\[1ex]
+        \beta_m
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        \bJ_m(k)\\[1ex]
+        \bJ_m'(k)
+    \end{pmatrix}.
+\end{equation}
+
+% = = = = = = = = = = = = = =
+\subsection{Solution of the resonance problem}
+% = = = = = = = = = = = = = =
+
+A resonances $\ell$ is a complex satisfying
+\begin{equation}
+    \ecav^{-1}\, C_m'(\ell) \Hu_m(\ell) - C_m(\ell) {\Hu_m}'(\ell) = 0
+\end{equation}
+with the associated mode
+\begin{equation}
+    w_\ell(r) = \begin{dcases}
+        C_m(k\, r) & \text{if } r \le 1\\
+        \tfrac{C_m(k)}{\Hu_m(k)}\Hu_m(k\, r) & \text{if } r > 1
+    \end{dcases}.
+\end{equation}
 
 %============================
 \section{Annulus cavities}
 %============================
+
+% = = = = = = = = = = = = = =
+\subsection{Constant optical parameters}
+% = = = = = = = = = = = = = =
+
+% = = = = = = = = = = = = = =
+\subsection{The flat well version}
+% = = = = = = = = = = = = = =
+
+% = = = = = = = = = = = = = =
+\subsection{The full flat version}
+% = = = = = = = = = = = = = =
+
+\bibliographystyle{alpha}
+\bibliography{references}
 
 \end{document}
