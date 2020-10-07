@@ -13,10 +13,10 @@ N = 64
 T = 2
 X, Y = np.meshgrid(np.linspace(-T, T, num=N), np.linspace(-T, T, num=N))
 if len(argv) > 4:
-    U = disk.scattered_field(εc, μc, k, T, X, Y)
+    U = disk.scattered_field(εc, μc, k, T, X, Y, "xy")
     which = "Scattered field"
 else:
-    U = disk.total_field(εc, μc, k, T, X, Y)
+    U = disk.total_field(εc, μc, k, T, X, Y, "xy")
     which = "Total field"
 
 n = 128

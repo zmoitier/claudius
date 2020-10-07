@@ -18,10 +18,10 @@ X, Y = np.meshgrid(x, x)
 fig = plt.figure()
 
 if len(argv) > 4:
-    U = disk.scattered_field(εc, μc, k, T, X, Y)
+    U = disk.scattered_field(εc, μc, k, T, X, Y, "xy")
     which = "Scattered field"
 else:
-    U = disk.total_field(εc, μc, k, T, X, Y)
+    U = disk.total_field(εc, μc, k, T, X, Y, "xy")
     which = "Total field"
 
 plt.title(

@@ -2,7 +2,6 @@ from math import ceil
 
 import numba
 from numpy import arange, e, exp, sin, sqrt, where
-from scipy.integrate import quad
 from scipy.special import jv
 
 
@@ -26,7 +25,7 @@ def M_trunc(k, T):
     return I[-1]
 
 
-def incident_field(k, x, y, coord="xy"):
+def incident_field(k, x, y, coord):
     if coord == "xy":
         return exp(1j * k * y)
     elif coord == "rθ":
