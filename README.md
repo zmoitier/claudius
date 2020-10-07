@@ -2,11 +2,14 @@
 
 ## Name test
 
-- `sric` (Scattering by Rotationally Invariant Cavities)
-- `acsric` (Analytic Computations for Scattering in Rotationally Invariant Cavities)
-- `accras` (Analytic Computations for sCattering in Rotationally invAriant cavitieS)
-- `cobras` (COmptutations in Balls for Resonance And Scattering)
-- `acros` (Analytic Computations of Resonance and Scattering)
+- `acsric` (Analytic Computations for Scattering in Rotationally Invariant Cavities) free on pypi
+- `accras` (Analytic Computations for sCattering in Rotationally invAriant cavitieS) free on pypi
+- `analytic-scattering` free on pypi
+- `spectral-scattering` free on pypi
+
+> - `sric` close to `slric` (Scattering by Rotationally Invariant Cavities)
+> - `cobras` taken on pypi (COmptutations in Balls for Resonance And Scattering)
+> - `acoras` close to `acora` (Analytic Computations Of Resonance And Scattering)
 
 **Sentences:**
 
@@ -34,12 +37,12 @@
 - 3D Helmholtz
 
   - Sphere (constant)
-  - spherical shell (constant, flat well, full flat)
+  - spherical shell (constant, flat well)
 
 - 3D Maxwell
 
   - Sphere (constant)
-  - spherical shell (constant, flat well, full flat)
+  - spherical shell (constant, flat well)
 
 ## Acknowledgment
 
