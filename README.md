@@ -7,6 +7,7 @@
 - `accras` (analytic computations for sCattering in rotationally invAriant cavitieS)
 - `cobras` (COmptutations in Balls for Resonance And Scattering)
 - `acros` (Analytic Computations of Resonance ans Scattering)
+- `analytic_scattering`
 
 **Sentences:**
 
@@ -22,6 +23,7 @@
 - balls
 - plane waves
 - rotationally invariant cavities
+- spectral
 
 ## To Do
 
