@@ -4,10 +4,9 @@
 
 - `sric` (Scattering by Rotationally Invariant Cavities)
 - `acsric` (Analytic Computations for Scattering in Rotationally Invariant Cavities)
-- `accras` (analytic computations for sCattering in rotationally invAriant cavitieS)
+- `accras` (Analytic Computations for sCattering in Rotationally invAriant cavitieS)
 - `cobras` (COmptutations in Balls for Resonance And Scattering)
-- `acros` (Analytic Computations of Resonance ans Scattering)
-- `analytic_scattering`
+- `acros` (Analytic Computations of Resonance and Scattering)
 
 **Sentences:**
 
@@ -44,4 +43,4 @@
 
 ## Acknowledgment
 
-I would like to thanks [Camille Carvalho](https://github.com/carvalhocamille) for helping with the name.
+I would like to thank [Camille Carvalho](https://github.com/carvalhocamille) for helping with the name.
