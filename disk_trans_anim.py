@@ -3,33 +3,36 @@ from sys import argv
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
+from matplotlib.artist import Artist
 
-import rot_inv_scattering.disk as disk
+from rot_inv_scattering import *
 
 εc = float(argv[1])
 μc = float(argv[2])
 k = float(argv[3])
+T = 2
 
 N = 256
-T = 2
 x, dx = np.linspace(-T, T, num=N, retstep=True)
 X, Y = np.meshgrid(x, x)
 
-fig = plt.figure()
-
 if len(argv) > 4:
-    U = disk.scattered_field(εc, μc, k, T, X, Y, "xy")
+    U = disk_trans.scattered_field(εc, μc, k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Scattered field"
 else:
-    U = disk.total_field(εc, μc, k, T, X, Y, "xy")
+    U = disk_trans.total_field(εc, μc, k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Total field"
+
+fig, ax = plt.subplots()
 
 plt.title(
     fr"{which}: $\varepsilon_{{\mathsf{{c}}}} \equiv {εc}$, $\mu_{{\mathsf{{c}}}} \equiv {μc}$, and $k = {k}$"
 )
 
+disk = plt.Circle((0, 0), 1, fill=False, ec="k", lw=2, ls="--", animated=True)
+
 UaM = np.amax(np.abs(U))
-im = plt.imshow(
+im = ax.imshow(
     np.real(U),
     interpolation="none",
     cmap="RdBu_r",
@@ -40,24 +43,27 @@ im = plt.imshow(
     vmin=-UaM,
     vmax=UaM,
 )
-plt.xticks()
-plt.yticks()
-cbar = plt.colorbar()
-cbar.ax.tick_params()
+cbar = plt.colorbar(im, ax=ax)
 
 nbt = 110
 dt = 2 * np.pi / (k * nbt)
 expi = np.exp(-1j * k * dt)
 
 
+def init():
+    return (im, ax.add_artist(disk))
+
+
 def animate(i):
-    global U
+    global U, disk
 
     U *= expi
     im.set_array(np.real(U))
-    return (im,)
+    return (im, ax.add_artist(disk))
 
 
-anim = FuncAnimation(fig, animate, frames=nbt, blit=True, interval=20, repeat=True)
+anim = FuncAnimation(
+    fig, animate, init_func=init, frames=nbt, blit=True, interval=20, repeat=True
+)
 
 plt.show()

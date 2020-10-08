@@ -1,4 +1,4 @@
 """isort:skip_file"""
-from .fields import *
-from .sol_scattering import *
-from .calc_fields import *
+from .field import *
+from .calc_solution import *
+from .calc_field import *

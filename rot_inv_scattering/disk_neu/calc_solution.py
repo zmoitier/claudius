@@ -1,8 +1,8 @@
 from scipy.special import h1vp, jvp
 
-from rot_inv_scattering import M_trunc, Solution
+from rot_inv_scattering import Solution
 
 
-def solution(k, T):
-    m = range(M_trunc(k, T) + 1)
+def solution(k, M):
+    m = range(M + 1)
     return Solution(-jvp(m, k) / h1vp(m, k), ())

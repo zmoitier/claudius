@@ -4,7 +4,7 @@ from rot_inv_scattering import εμ_to_n, εμ_to_η
 
 
 def inner_field(ε, μ):
-    if ε * μ > 0:
+    if (ε * μ).real > 0:
         n = εμ_to_n(ε, μ)
         return lambda m, r: jv(m, n * r)
     else:
@@ -13,7 +13,7 @@ def inner_field(ε, μ):
 
 
 def inner_field_der(ε, μ, p=1):
-    if ε * μ > 0:
+    if (ε * μ).real > 0:
         n = εμ_to_n(ε, μ)
         c = n ** p
         return lambda m, z: c * jvp(m, n * z, p)

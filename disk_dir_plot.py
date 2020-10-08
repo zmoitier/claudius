@@ -7,22 +7,21 @@ from rot_inv_scattering import *
 
 k = float(argv[1])
 T = 2
-sol = disk_dir.solution(k, T)
 
 N = 128
 X, Y = np.meshgrid(np.linspace(-T, T, num=N), np.linspace(-T, T, num=N))
 if len(argv) > 2:
-    U = scattered_field(k, sol, X, Y, "xy")
+    U = disk_dir.scattered_field(k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Scattered field"
 else:
-    U = total_field(k, sol, X, Y, "xy")
+    U = disk_dir.total_field(k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Total field"
 
 Cmap = {"part": "RdBu_r", "abs": "viridis", "arg": "twilight_shifted_r"}
 
 
 def my_plot(ax, U, type, name):
-    disk = plt.Circle((0, 0), 1, color="k", alpha=0.25)
+    disk = plt.Circle((0, 0), 1, fc=(0.75, 0.75, 0.75), ec="k", lw=2)
     if type == "part":
         U_max = np.amax(np.abs(U))
         Clim = (-U_max, U_max)

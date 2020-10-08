@@ -6,7 +6,7 @@ import sys
 
 import numpy as np
 
-import rot_inv_scattering.disk as disk
+from rot_inv_scattering import *
 
 
 def doprofile(func, filename, *l):
@@ -25,17 +25,9 @@ def doprofile(func, filename, *l):
 
 
 εc = -1.1
-μc = 1
-k = 8
-
-N = 256
+μc = -1.1
+k = 5
 T = 2
-X, Y = np.meshgrid(np.linspace(-T, T, num=N), np.linspace(-T, T, num=N))
 
-if len(sys.argv) > 1:
-    print("Scattered field")
-    r = doprofile(disk.scattered_field, "profiling.dat", εc, μc, k, T, X, Y, "xy")
-else:
-    print("Total field")
-    r = doprofile(disk.total_field, "profiling.dat", εc, μc, k, T, X, Y, "xy")
+r = doprofile(disk_trans.solution, "profiling.dat", εc, μc, k, T)
 print(r)
