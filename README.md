@@ -6,6 +6,7 @@
 - `accras` (Analytic Computations for sCattering in Rotationally invAriant cavitieS) free on pypi
 - `analytic-scattering` free on pypi
 - `spectral-scattering` free on pypi
+- `anaconsca` ANAlytic COmputatioNs for SCAttering
 
 > - `sric` close to `slric` (Scattering by Rotationally Invariant Cavities)
 > - `cobras` taken on pypi (COmptutations in Balls for Resonance And Scattering)
@@ -31,8 +32,10 @@
 
 - 2D Helmholtz
 
+  - Disk Dirichlet
+  - Disk Neumann
   - Disk (constant)
-  - Annulus (constant, flat well, full flat)
+  - Annulus (constant, flat well)
 
 - 3D Helmholtz
 
