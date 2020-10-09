@@ -3,7 +3,8 @@ from .core import *
 from .utils import *
 from .coords import *
 
-from .calc_field_2d import *
+from .field_2d import *
+from .far_field_2d import *
 
 from . import disk_dir
 from . import disk_neu

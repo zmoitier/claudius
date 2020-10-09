@@ -2,15 +2,10 @@
 
 ## Name test
 
-- `acsric` (Analytic Computations for Scattering in Rotationally Invariant Cavities) free on pypi
-- `accras` (Analytic Computations for sCattering in Rotationally invAriant cavitieS) free on pypi
-- `analytic-scattering` free on pypi
-- `spectral-scattering` free on pypi
-- `anaconsca` ANAlytic COmputatioNs for SCAttering
+### analytic computations for scattering (and resonance)
 
-> - `sric` close to `slric` (Scattering by Rotationally Invariant Cavities)
-> - `cobras` taken on pypi (COmptutations in Balls for Resonance And Scattering)
-> - `acoras` close to `acora` (Analytic Computations Of Resonance And Scattering)
+- accost AnalytiC COmputations for ScaTtering
+- accoster AnalytiC COmputations for ScaTtERing
 
 **Sentences:**
 
@@ -49,4 +44,4 @@
 
 ## Acknowledgment
 
-I would like to thank [Camille Carvalho](https://github.com/carvalhocamille) for helping with the name.
+I would like to thank [Camille Carvalho](https://github.com/carvalhocamille) and Friedelinde for helping with the name.
