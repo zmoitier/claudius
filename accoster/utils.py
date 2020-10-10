@@ -1,6 +1,6 @@
 from math import ceil
 
-from numpy import arange, e, exp, sin, sqrt, where
+from numpy import amax, arange, e, exp, sin, sqrt, where
 from scipy.special import jv
 
 
@@ -17,6 +17,19 @@ def M_trunc(k, T):
     JmkT = jv(m, k * T)
     I = where(JmkT >= 1e-8)[0]
     return I[-1]
+
+
+def M_trunc_none(k, T, r, M):
+    if (T is not None) and (M is not None):
+        M = M_trunc(k, T)
+        return max(M, T)
+    elif T is None:
+        return M
+    elif M is None:
+        return M_trunc(k, T)
+    else:
+        T = amax(r)
+        return M_trunc(k, T)
 
 
 def incident_field(k, c1, c2, coord):

@@ -5,7 +5,6 @@ import pstats
 import sys
 
 import numpy as np
-
 from rot_inv_scattering import *
 
 

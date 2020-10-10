@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib.animation import FuncAnimation
 from matplotlib.artist import Artist
 
-from rot_inv_scattering import *
+from accoster import *
 
 k = float(argv[1])
 T = 2

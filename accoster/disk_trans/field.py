@@ -1,6 +1,6 @@
 from scipy.special import iv, ivp, jv, jvp
 
-from rot_inv_scattering import εμ_to_n, εμ_to_η
+from accoster import εμ_to_n, εμ_to_η
 
 
 def inner_field(ε, μ):

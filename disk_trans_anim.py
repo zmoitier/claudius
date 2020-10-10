@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 from matplotlib.artist import Artist
-
 from rot_inv_scattering import *
 
 εc = float(argv[1])

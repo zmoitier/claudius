@@ -1,14 +1,12 @@
 from numpy import amax
 
-from rot_inv_scattering import M_trunc, sc_field, to_polar, tt_field
-from rot_inv_scattering.disk_neu import solution
+from accoster import M_trunc_none, sc_field, to_polar, tt_field
+from accoster.disk_dir import solution
 
 
-def scattered_field(k, c1, c2, coord, T=None):
+def scattered_field(k, c1, c2, coord, T=None, M=None):
     r, θ = to_polar(c1, c2, coord)
-    if T is None:
-        T = amax(r)
-    M = M_trunc(k, T)
+    M = M_trunc_none(k, T, r, M)
 
     sol = solution(k, M)
     return sc_field(k, sol, r, θ, "rθ")

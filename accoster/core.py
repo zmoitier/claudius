@@ -13,3 +13,4 @@ def abs2(x):
 class Solution:
     coeff: ndarray
     func: tuple
+    radii: tuple

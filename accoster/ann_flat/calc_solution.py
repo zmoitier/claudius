@@ -1,6 +1,6 @@
 from scipy.special import hankel1, jv
 
-from rot_inv_scattering import Solution
+from accoster import Solution
 
 
 def solution(k, M):

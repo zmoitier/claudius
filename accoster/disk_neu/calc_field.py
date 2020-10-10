@@ -1,7 +1,7 @@
 from numpy import amax
 
-from rot_inv_scattering import M_trunc, sc_field, to_polar, tt_field
-from rot_inv_scattering.disk_dir import solution
+from accoster import M_trunc, sc_field, to_polar, tt_field
+from accoster.disk_neu import solution
 
 
 def scattered_field(k, c1, c2, coord, T=None):

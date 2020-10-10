@@ -78,6 +78,7 @@
 \newcommand{\Hu}{\mathop{}\!\mathsf{H}^{(1)}}
 \newcommand{\Hd}{\mathop{}\!\mathsf{H}^{(2)}}
 \newcommand{\bI}{\mathop{}\!\mathsf{I}}
+\newcommand{\bK}{\mathop{}\!\mathsf{K}}
 
 % Operateurs ----------------------------------------------
 \newcommand{\di}[1]{\mathop{}\!\mathrm{d}#1}
@@ -107,7 +108,7 @@
 
 
 % Titre ===================================================
-\title{Scattering by rotationally invariant cavities}
+\title{Analytic computations for scattering}
 \author{Zoïs \textsc{Moitier}}
 
 
@@ -117,21 +118,22 @@
 \maketitle
 
 \begin{abstract}
-    We solve scattering problem by rotationally invariant cavities.
-    The shape consider are disk and annulus where the permittivity and permeability are radial function.
+    We solve scattering problem for cases where we have analytical expressions.
+    All cavities consider will be invariant by rotation.
+    The shape consider are disk, annulus, ball and spherical shell where the permittivity and permeability are radial function.
 \end{abstract}
 
 \tableofcontents
 
-%============================
-\section{The scattering problem}
-%============================
+%================================
+\section{The scattering problems}
+%================================
 
 % = = = = = = = = = = = = = =
 \subsection{Problem statement}
 % = = = = = = = = = = = = = =
 
-Let $\bbD = \{\vx \in \bbR^2 \mid |\vx| < 1\}$ be the unit disk and $\bbA_\delta = \{\vx \in \bbR^2 \mid \delta < |\vx| < 1\}$ an annulus of width $\delta > 0$.
+Let $\bbD = \{\vx \in \bbR^2 \mid |\vx| < 1\}$ be the unit disk and $\bbA_\delta = \{\vx \in \bbR^2 \mid \delta < |\vx| < 1\}$ an annulus of width $1-\delta$ where $\delta \in (0, 1)$.
 The cavity $\Omega$ denote either $\bbD$ or $\bbA_\delta$ and the interface $\Gamma = \partial\Omega$ is the boundary of $\Omega$.
 We define the function $\eps \in \rmL^\infty(\bbR^2)$ (permittivity) and $\mu \in \rmL^\infty(\bbR^2)$ (permeability) as
 \[
@@ -160,9 +162,9 @@ We define the following scattering problem: Given a wavenumber $k > 0$ and an in
         \text{$u^\sca$ is $k$-outgoing} 
     \end{dcases}
 \end{equation}
-where $\vect{\nu} : \Gamma \to \bbS^1$ is the exterior unit normal and $u^\sca$ is $k$-outgoing mean that for $|\vx| \ge 1$, there exist $(c_m)_{m \in \bbZ} \in \ell^2(\bbZ)$ such that
+where $\vect{\nu} : \Gamma \to \bbS^1$ is the exterior unit normal and $u^\sca$ is $k$-outgoing mean that for $|\vx| \ge 1$, there exist $(\beta_m)_{m \in \bbZ} \in \ell^2(\bbZ)$ such that
 \begin{equation}\label{eq:OWC}
-    u^\sca(\vx) = \sum_{m \in \bbZ} c_m\, \Hu_m(k\, r)\, \ex^{\im\, m\, \theta}
+    u^\sca(\vx) = \sum_{m \in \bbZ} \beta_m\, \Hu_m(k\, r)\, \ex^{\im\, m\, \theta}
 \end{equation}
 with $(r, \theta) \in \bbR_+ \times \bbR / 2\pi\bbZ$ the polar coordinate associated to the Cartesian coordinates $\vx \in \bbR^2$ and $z \mapsto \Hu_m(z)$ is the Hankel function of the first kind of order $m$.
 \end{subequations}
@@ -217,36 +219,33 @@ with $\propto$ meaning ``up to a multiplicative constant''.
 \section{Disk cavities with constant optical parameters}
 %============================
 
-% = = = = = = = = = = = = = =
-\subsection{Solution of the scattering problem}
-% = = = = = = = = = = = = = =
-
+\paragraph{Solution of the scattering problem.}
 In this section, we assume that the cavity is the unit disk $\bbD$ and that $\ecav$ and $\mcav$ are non zero constant in $[0, 1]$.
 The solution of problem \eqref{prob:w_scattering} for $0 < r < 1$ depend of the sign of $\ecav\mcav$.
 We denote by $C_m$ the function
 \[
     C_m(z) = \begin{dcases}
-        \bJ_m(\sqrt{\ecav\mcav}\, z) & \text{if } \ecav\mcav > 0\\
-        \bI_m(\sqrt{-\ecav\mcav}\, z) & \text{if } \ecav\mcav < 0
+        \bJ_m(\sqrt{\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) > 0\\
+        \bI_m(\sqrt{-\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) < 0
     \end{dcases}
 \]
 where $z \mapsto \bI_m(z)$ is the modified Bessel of the first kind.
 The solution of problem \eqref{prob:w_scattering} is
 \begin{equation}
     w_m(r) = \begin{dcases}
-        \alpha_m\, C_m(k\, r) & \text{if } r \le 1\\
-        \beta_m\, \Hu_m(k\, r) + \bJ_m(k\, r) & \text{if } r > 1
+        a_m\, C_m(k\, r) & \text{if } r \le 1\\
+        b_m\, \Hu_m(k\, r) + \bJ_m(k\, r) & \text{if } r > 1
     \end{dcases}
 \end{equation}
-where $(\alpha_m, \beta_m)$ are solution of
+where $(a_m, b_m)$ are solution of
 \begin{equation}
     \begin{pmatrix*}[r]
         C_m(k) & -\Hu_m(k)\\[1ex]
         \ecav^{-1}\, C_m'(k) & -{\Hu_m}'(k)
     \end{pmatrix*}
     \begin{pmatrix}
-        \alpha_m\\[1ex]
-        \beta_m
+        a_m\\[1ex]
+        b_m
     \end{pmatrix} = 
     \begin{pmatrix}
         \bJ_m(k)\\[1ex]
@@ -254,10 +253,8 @@ where $(\alpha_m, \beta_m)$ are solution of
     \end{pmatrix}.
 \end{equation}
 
-% = = = = = = = = = = = = = =
-\subsection{Solution of the resonance problem}
-% = = = = = = = = = = = = = =
 
+\paragraph{Solution of the resonance problem.}
 A resonances $\ell$ is a complex satisfying
 \begin{equation}
     \ecav^{-1}\, C_m'(\ell) \Hu_m(\ell) - C_m(\ell) {\Hu_m}'(\ell) = 0
@@ -274,17 +271,74 @@ with the associated mode
 \section{Annulus cavities}
 %============================
 
+\paragraph{Solution of the scattering problem.}
+In this section, we assume that the cavity is the annulus $\bbA_\delta = \{\vx \in \bbR^2 \mid \delta < |\vx| < 1\}$ with $0 < \delta < 1$ and that $\ecav$ and $\mcav$ are non zero constant in $[0, 1]$.
+The solution of problem \eqref{prob:w_scattering} for $\delta < r < 1$ depend of the sign of $\ecav\mcav$ and are denoted by $C_m$ and $D_m$.
+The solution of problem \eqref{prob:w_scattering} is
+\begin{equation}
+    w_m(r) = \begin{dcases}
+        a_m\, \bJ_m(k\, r) & \text{if } 0 \le r < \delta\\
+        b_m\, C_m(k\, r) + c_m\, D_m(k\, r) & \text{if } \delta \le r \le 1\\
+        d_m\, \Hu_m(k\, r) + \bJ_m(k\, r) & \text{if } r > 1
+    \end{dcases}
+\end{equation}
+where $(a_m, b_m, c_m, d_m)$ are solution of
+\begin{equation}
+    \begin{pmatrix*}[r]
+        -\bJ_m(k\delta) & C_m(k\delta) & D_m(k\delta) & 0\\[1ex]
+        -\bJ_m'(k\delta) & \ecav^{-1}\, C_m'(k\delta) & \ecav^{-1}\, D_m'(k\delta) & 0\\[1ex]
+        0 & C_m(k) & D_m(k) & -\Hu_m(k)\\[1ex]
+        0 & \ecav^{-1}\, C_m'(k) & \ecav^{-1}\, D_m'(k) & -{\Hu_m}'(k)
+    \end{pmatrix*}
+    \begin{pmatrix}
+        a_m\\[1ex]
+        b_m\\[1ex]
+        c_m\\[1ex]
+        d_m
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        0\\[1ex]
+        0\\[1ex]
+        \bJ_m(k)\\[1ex]
+        \bJ_m'(k)
+    \end{pmatrix}.
+\end{equation}
+
+
+\paragraph{Solution of the resonance problem.}
+A resonances $\ell$ is a complex satisfying
+\begin{equation}
+    \ecav^{-1}\, C_m'(\ell) \Hu_m(\ell) - C_m(\ell) {\Hu_m}'(\ell) = 0
+\end{equation}
+with the associated mode
+\begin{equation}
+    w_\ell(r) = \begin{dcases}
+        C_m(k\, r) & \text{if } r \le 1\\
+        \tfrac{C_m(k)}{\Hu_m(k)}\Hu_m(k\, r) & \text{if } r > 1
+    \end{dcases}.
+\end{equation}
+
 % = = = = = = = = = = = = = =
 \subsection{Constant optical parameters}
 % = = = = = = = = = = = = = =
+
+\[
+    C_m(z) = \begin{dcases}
+        \bJ_m(\sqrt{\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) > 0\\
+        \bI_m(\sqrt{-\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) < 0
+    \end{dcases} \quad
+    \text{and} \quad
+    D_m(z) = \begin{dcases}
+        \bY_m(\sqrt{\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) > 0\\
+        \bK_m(\sqrt{-\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) < 0
+    \end{dcases}
+\]
+where $z \mapsto \bK_m(z)$ is the modified Bessel of the second kind.
 
 % = = = = = = = = = = = = = =
 \subsection{The flat well version}
 % = = = = = = = = = = = = = =
 
-% = = = = = = = = = = = = = =
-\subsection{The full flat version}
-% = = = = = = = = = = = = = =
 
 \bibliographystyle{alpha}
 \bibliography{references}

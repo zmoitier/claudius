@@ -3,7 +3,7 @@ from sys import argv
 import matplotlib.pyplot as plt
 import numpy as np
 
-from rot_inv_scattering import *
+from accoster import *
 
 k = float(argv[1])
 T = 2
