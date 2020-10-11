@@ -5,6 +5,7 @@ from .coords import to_polar
 
 from .field_2d import sc_field, tt_field
 from .far_field_2d import sc_far_field
+from .normL2 import normL2_disk
 
 from . import disk_dir
 from . import disk_neu
