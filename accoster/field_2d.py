@@ -9,16 +9,16 @@ from accoster import incident_field, to_polar
 def _partial_field_0(k, β, r, θ):
     kr = k * r
 
-    us = β[0] * hankel1(0, kr) * ones_like(θ)
-    tmp = zeros_like(us)
+    u = β[0] * hankel1(0, kr) * ones_like(θ)
+    tmp = zeros_like(u)
     for m, c in enumerate(β[1:], start=1):
         tmp = c * hankel1(m, kr)
         if m % 2:
             tmp *= 2j * sin(m * θ)
         else:
             tmp *= 2 * cos(m * θ)
-        us += tmp
-    return us
+        u += tmp
+    return u
 
 
 def _partial_field_1(k, αβ, C, r, θ, I, E):
@@ -61,9 +61,8 @@ def _partial_field_2(k, abcd, C, D, r, θ, I, A, E):
     return u
 
 
-def sc_field(k, sol, c1, c2, coord):
-    r, θ = to_polar(c1, c2, coord)
-    us = zeros_like(c1, dtype=complex) * zeros_like(c2, dtype=complex)
+def sc_field(k, sol, r, θ):
+    us = 1j * zeros_like(r) * zeros_like(θ)
     n = len(sol.func)
     if n == 0:
         E = where(r >= 1)
@@ -73,7 +72,7 @@ def sc_field(k, sol, c1, c2, coord):
         I = where(r < 1)
         E = where(r >= 1)
         us = _partial_field_1(k, sol.coeff, sol.func[0], r, θ, I, E)
-        us[I] -= incident_field(k, c1[I], c2[I], coord)
+        us[I] -= incident_field(k, r[I], θ[I], "rθ")
         return us
     elif n == 2:
         δ = sol.radii[0]
@@ -81,27 +80,26 @@ def sc_field(k, sol, c1, c2, coord):
         A = where((r > δ) & (r < 1))
         E = where(r >= 1)
         us = _partial_field_2(k, sol.coeff, sol.func[0], sol.func[1], r, θ, I, A, E)
-        us[I] -= incident_field(k, c1[I], c2[I], coord)
-        us[A] -= incident_field(k, c1[A], c2[A], coord)
+        us[I] -= incident_field(k, r[I], θ[I], "rθ")
+        us[A] -= incident_field(k, r[A], θ[A], "rθ")
         return us
     else:
         exit("Unsopported number of function in sol.func")
 
 
-def tt_field(k, sol, c1, c2, coord):
-    r, θ = to_polar(c1, c2, coord)
-    ut = zeros_like(c1, dtype=complex) * zeros_like(c2, dtype=complex)
+def tt_field(k, sol, r, θ):
+    ut = 1j * zeros_like(r) * zeros_like(θ)
     n = len(sol.func)
     if n == 0:
         E = where(r >= 1)
         ut[E] = _partial_field_0(k, sol.coeff, r[E], θ[E])
-        ut[E] += incident_field(k, c1[E], c2[E], coord)
+        ut[E] += incident_field(k, r[E], θ[E], "rθ")
         return ut
     elif n == 1:
         I = where(r < 1)
         E = where(r >= 1)
         ut = _partial_field_1(k, sol.coeff, sol.func[0], r, θ, I, E)
-        ut[E] += incident_field(k, c1[E], c2[E], coord)
+        ut[E] += incident_field(k, r[E], θ[E], "rθ")
         return ut
     elif n == 2:
         δ = sol.radii[0]
@@ -109,7 +107,7 @@ def tt_field(k, sol, c1, c2, coord):
         A = where((r > δ) & (r < 1))
         E = where(r >= 1)
         ut = _partial_field_2(k, sol.coeff, sol.func[0], sol.func[1], r, θ, I, A, E)
-        ut[E] += incident_field(k, c1[E], c2[E], coord)
+        ut[E] += incident_field(k, r[E], θ[E], "rθ")
         return ut
     else:
         exit("Unsopported number of function in sol.func")

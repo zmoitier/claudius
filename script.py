@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from accoster import *
+import accoster as acs
 
 δ = 0.5
 εc = -1.1

@@ -2,7 +2,7 @@ from sys import argv
 
 import matplotlib.pyplot as plt
 import numpy as np
-from rot_inv_scattering import *
+from context import accoster as acs
 
 k = float(argv[1])
 T = 2
@@ -10,10 +10,10 @@ T = 2
 N = 128
 X, Y = np.meshgrid(np.linspace(-T, T, num=N), np.linspace(-T, T, num=N))
 if len(argv) > 2:
-    U = disk_neu.scattered_field(k, X, Y, "xy", T=np.sqrt(2) * T)
+    U = acs.disk_neu.scattered_field(k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Scattered field"
 else:
-    U = disk_neu.total_field(k, X, Y, "xy", T=np.sqrt(2) * T)
+    U = acs.disk_neu.total_field(k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Total field"
 
 Cmap = {"part": "RdBu_r", "abs": "viridis", "arg": "twilight_shifted_r"}

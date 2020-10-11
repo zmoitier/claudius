@@ -25,8 +25,6 @@
 
 ## To Do
 
-- Finir shape fonction r*θ, far field, fonction N
-
 - 2D Helmholtz
 
   - Disk Dirichlet

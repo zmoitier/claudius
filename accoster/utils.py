@@ -1,4 +1,5 @@
 from math import ceil
+from sys import exit
 
 from numpy import amax, arange, e, exp, sin, sqrt, where
 from scipy.special import jv
@@ -21,12 +22,11 @@ def M_trunc(k, T):
 
 def M_trunc_none(k, T, r, M):
     if (T is not None) and (M is not None):
-        M = M_trunc(k, T)
-        return max(M, T)
-    elif T is None:
-        return M
-    elif M is None:
+        exit("Specify either T or M but not both")
+    elif T is not None:
         return M_trunc(k, T)
+    elif M is not None:
+        return M
     else:
         T = amax(r)
         return M_trunc(k, T)

@@ -2,30 +2,35 @@ from sys import argv
 
 import matplotlib.pyplot as plt
 import numpy as np
+from context import accoster as acs
 from matplotlib.animation import FuncAnimation
 from matplotlib.artist import Artist
-from rot_inv_scattering import *
 
-k = float(argv[1])
+δ = float(argv[1])
+εc = float(argv[2])
+μc = float(argv[3])
+k = float(argv[4])
 T = 2
-sol = disk_neu.solution(k, T)
 
 N = 256
 x, dx = np.linspace(-T, T, num=N, retstep=True)
 X, Y = np.meshgrid(x, x)
 
-if len(argv) > 2:
-    U = disk_neu.scattered_field(k, X, Y, "xy", T=np.sqrt(2) * T)
+if len(argv) > 5:
+    U = acs.ann_cts.scattered_field(δ, εc, μc, k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Scattered field"
 else:
-    U = disk_neu.total_field(k, X, Y, "xy", T=np.sqrt(2) * T)
+    U = acs.ann_cts.total_field(δ, εc, μc, k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Total field"
 
 fig, ax = plt.subplots()
 
-plt.title(fr"{which}: $k = {k}$")
+plt.suptitle(
+    fr"{which}: $\delta = {δ}$, $\varepsilon_{{\mathsf{{c}}}} \equiv {εc}$, $\mu_{{\mathsf{{c}}}} \equiv {μc}$, and $k = {k}$"
+)
 
-disk = plt.Circle((0, 0), 1, fc=(0.75, 0.75, 0.75), ec="k", lw=2, animated=True)
+diskδ = plt.Circle((0, 0), δ, fill=False, ec="k", lw=2, ls="--", animated=True)
+disk1 = plt.Circle((0, 0), 1, fill=False, ec="k", lw=2, ls="--", animated=True)
 
 UaM = np.amax(np.abs(U))
 im = ax.imshow(
@@ -47,15 +52,15 @@ expi = np.exp(-1j * k * dt)
 
 
 def init():
-    return (im, ax.add_artist(disk))
+    return (im, ax.add_artist(diskδ), ax.add_artist(disk1))
 
 
 def animate(i):
-    global U, disk
+    global U, diskδ, disk1
 
     U *= expi
     im.set_array(np.real(U))
-    return (im, ax.add_artist(disk))
+    return (im, ax.add_artist(diskδ), ax.add_artist(disk1))
 
 
 anim = FuncAnimation(

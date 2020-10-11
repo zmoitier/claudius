@@ -9,14 +9,12 @@ def scattered_field(k, c1, c2, coord, T=None, M=None):
     M = M_trunc_none(k, T, r, M)
 
     sol = solution(k, M)
-    return sc_field(k, sol, r, θ, "rθ")
+    return sc_field(k, sol, r, θ)
 
 
-def total_field(k, c1, c2, coord, T=None):
+def total_field(k, c1, c2, coord, T=None, M=None):
     r, θ = to_polar(c1, c2, coord)
-    if T is None:
-        T = amax(r)
-    M = M_trunc(k, T)
+    M = M_trunc_none(k, T, r, M)
 
     sol = solution(k, M)
-    return tt_field(k, sol, r, θ, "rθ")
+    return tt_field(k, sol, r, θ)

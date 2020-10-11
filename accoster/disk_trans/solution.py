@@ -17,4 +17,4 @@ def solution(εc, μc, k, M):
     A = array([[[C0[m], H0[m]], [C1[m], H1[m]]] for m in range(M + 1)])
     F = array([[J0[m], J1[m]] for m in range(M + 1)])
 
-    return Solution(solve(A, F), (C,))
+    return Solution(solve(A, F), (C,), (1,))

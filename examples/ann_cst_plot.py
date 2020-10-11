@@ -2,7 +2,7 @@ from sys import argv
 
 import matplotlib.pyplot as plt
 import numpy as np
-from rot_inv_scattering import *
+from context import accoster as acs
 
 δ = float(argv[1])
 εc = float(argv[2])
@@ -13,10 +13,10 @@ T = 2
 N = 64
 X, Y = np.meshgrid(np.linspace(-T, T, num=N), np.linspace(-T, T, num=N))
 if len(argv) > 5:
-    U = ann_cts.scattered_field(δ, εc, μc, k, X, Y, "xy", T=np.sqrt(2) * T)
+    U = acs.ann_cts.scattered_field(δ, εc, μc, k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Scattered field"
 else:
-    U = ann_cts.total_field(δ, εc, μc, k, X, Y, "xy", T=np.sqrt(2) * T)
+    U = acs.ann_cts.total_field(δ, εc, μc, k, X, Y, "xy", T=np.sqrt(2) * T)
     which = "Total field"
 
 Cmap = {"part": "RdBu_r", "abs": "viridis", "arg": "twilight_shifted_r"}
