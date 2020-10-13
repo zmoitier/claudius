@@ -19,3 +19,5 @@ fun_der = (acs.CD_cst_der(1, 1, k)[0], acs.CD_cst_der(1, 1, k), acs.CD_cst_der(1
 M = acs.M_trunc_2d(k, 2)
 prob = acs.create_probem(dim, pde, type, radii, εμc, k, fun, fun_der)
 sol = acs.solve_prob(prob, M)
+us = acs.sc_field_2d(sol, 1, 0)
+print(us)

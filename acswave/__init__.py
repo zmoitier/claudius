@@ -5,7 +5,7 @@ from .coords import to_polar
 
 from .bessel import CD_cst, CD_cst_der
 from .solve_prob import solve_prob
-from .field_2d import sc_field, tt_field
+from .field_2d import sc_field_2d, tt_field_2d
 
 # from .far_field_2d import sc_far_field
 # from .normL2 import normL2_disk
