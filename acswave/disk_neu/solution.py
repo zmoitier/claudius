@@ -1,6 +1,5 @@
-from scipy.special import h1vp, jvp
-
 from accoster import Solution
+from scipy.special import h1vp, jvp
 
 
 def solution(k, M):

@@ -1,9 +1,8 @@
+from accoster import Solution
+from accoster.disk_trans import inner_field, inner_field_der
 from numpy import array
 from numpy.linalg import solve
 from scipy.special import h1vp, hankel1, jv, jvp
-
-from accoster import Solution
-from accoster.disk_trans import inner_field, inner_field_der
 
 
 def solution(εc, μc, k, M):

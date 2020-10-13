@@ -1,9 +1,9 @@
 from sys import exit
 
 from numpy import cos, ones_like, sin, where, zeros_like
-from scipy.special import hankel1, jv
+from scipy.special import hankel1
 
-from accoster import incident_field, to_polar
+from acswave import incident_field, to_polar
 
 
 def _partial_field_0(k, β, r, θ):
@@ -61,7 +61,10 @@ def _partial_field_2(k, abcd, C, D, r, θ, I, A, E):
     return u
 
 
-def sc_field(k, sol, r, θ):
+def sc_field_2d(sol, r, θ):
+    if sol.dim == 3:
+        exit("Wrong dimension it should be 2 for this function.")
+
     us = 1j * zeros_like(r) * zeros_like(θ)
     n = len(sol.func)
     if n == 0:

@@ -1,32 +1,6 @@
-# rot-inv-scattering
+# acswave
 
-## Name test
-
-### analytic computations for scattering (and resonance)
-
-- acswave Analytic Computations for Scattering WAVE
-- forcefield analytic computations FOR sCattEring FIELD
-- anacos ANAlytic COmputations for ScattEring
-- acosca Analytic COmputations for SCAttEring
-- ancre ANalytic Computations foR scattEring
-- accost AnalytiC COmputations for ScaTtering
-- accoster AnalytiC COmputations for ScaTtERing
-
-**Sentences:**
-
-- analytic computations of scattering by rotationally invariant cavities
-- analytic computations in balls for resonances and scattering
-- analytic computations of resonances and scattering by balls
-
-**Keywords:**
-
-- analytic computation
-- resonances
-- scattering
-- balls
-- plane waves
-- rotationally invariant cavities
-- spectral
+## analytic computations for scattering waves
 
 ## To Do
 

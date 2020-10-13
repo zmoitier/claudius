@@ -1,8 +1,7 @@
+from accoster import abs2
 from numpy import pi
 from scipy.integrate import quad
 from scipy.special import hankel1, jv
-
-from accoster import abs2
 
 
 def normL2_rad(k, m, func, ρ):

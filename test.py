@@ -1,13 +1,21 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import accoster as acs
+import acswave as acs
 
-δ = 0.5
-εc = -1.1
-μc = 1
-k = 4
-T = 2
+dim = 2
+pde = "H"
+type = "P"
+radii = (0.5, 0.75, 1)
+εμc = (
+    (lambda r: np.ones_like(r), lambda r: np.ones_like(r)),
+    (lambda r: np.ones_like(r), lambda r: np.ones_like(r)),
+    (lambda r: np.ones_like(r), lambda r: np.ones_like(r)),
+)
+k = 5
+fun = (acs.CD_cst(1, 1, k)[0], acs.CD_cst(1, 1, k), acs.CD_cst(1, 1, k))
+fun_der = (acs.CD_cst_der(1, 1, k)[0], acs.CD_cst_der(1, 1, k), acs.CD_cst_der(1, 1, k))
 
-M = acs.M_trunc(k, T)
-sol = acs.disk_dir.solution(k, M)
+M = acs.M_trunc_2d(k, 2)
+prob = acs.create_probem(dim, pde, type, radii, εμc, k, fun, fun_der)
+sol = acs.solve_prob(prob, M)

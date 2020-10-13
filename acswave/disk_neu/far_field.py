@@ -1,7 +1,6 @@
-from numpy import amax, pi
-
 from accoster import M_trunc, sc_far_field
 from accoster.disk_neu import solution
+from numpy import amax, pi
 
 
 def far_field(k, θ, M=None):

@@ -1,6 +1,5 @@
-from scipy.special import iv, ivp, jv, jvp
-
 from accoster import εμ_to_n, εμ_to_η
+from scipy.special import iv, ivp, jv, jvp
 
 
 def inner_field(ε, μ):
