@@ -4,6 +4,11 @@
 
 ### analytic computations for scattering (and resonance)
 
+- acswave Analytic Computations for Scattering WAVE
+- forcefield analytic computations FOR sCattEring FIELD
+- anacos ANAlytic COmputations for ScattEring
+- acosca Analytic COmputations for SCAttEring
+- ancre ANalytic Computations foR scattEring
 - accost AnalytiC COmputations for ScaTtering
 - accoster AnalytiC COmputations for ScaTtERing
 
