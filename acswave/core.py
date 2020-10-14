@@ -2,6 +2,7 @@ from dataclasses import astuple, dataclass
 from sys import exit
 
 from numpy import ndarray
+from scipy.special import h1vp, hankel1
 
 
 @dataclass(frozen=True)
@@ -19,7 +20,7 @@ class Problem:
         return iter(astuple(self))
 
 
-def create_probem(dim, pde, inn_bdy, radii, εμ, k, fun, fun_der):
+def create_probem(dim, pde, inn_bdy, radii, εμ, k, func, func_der):
     if not (
         ((2 <= dim <= 3) and pde.startswith("H"))
         or ((dim == 3) and pde.startswith("M"))
@@ -42,14 +43,25 @@ def create_probem(dim, pde, inn_bdy, radii, εμ, k, fun, fun_der):
         )
 
     if inn_bdy.startswith("D") or inn_bdy.startswith("N"):
-        if not ((len(radii) - 1) == len(εμ) == len(fun) == len(fun_der)):
+        if not ((len(radii) - 1) == len(εμ) == len(func) == len(func_der)):
             exit(
                 """The lenght of radii -1 should be equal to the lenght of  εμ, func, and func_der."""
             )
 
     if inn_bdy.startswith("P"):
-        if not (len(radii) == len(εμ) == len(fun) == len(fun_der)):
+        if not (len(radii) == len(εμ) == len(func) == len(func_der)):
             exit("""The lenght of radii, εμ, func, and func_der should be equal.""")
+
+    if dim == 2:
+        fun = (*func, lambda m, r: hankel1(m, k * r))
+        fun_der = (*func_der, lambda m, r: k * h1vp(m, k * r))
+
+    if dim == 3:
+        if pde.startswith("H"):
+            pass
+
+        if pde.startswith("M"):
+            pass
 
     return Problem(dim, pde, inn_bdy, radii, εμ, k, fun, fun_der)
 
