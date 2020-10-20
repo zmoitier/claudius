@@ -49,6 +49,7 @@
 % Maths ===================================================
 % mathbb --------------------------------------------------
 \newcommand{\bbA}{\mathbb{A}}
+\newcommand{\bbB}{\mathbb{B}}
 \newcommand{\bbC}{\mathbb{C}}
 \newcommand{\bbD}{\mathbb{D}}
 \newcommand{\bbN}{\mathbb{N}}
@@ -59,6 +60,8 @@
 
 % mathcal --------------------------------------------------
 \newcommand{\calD}{\mathcal{D}}
+\newcommand{\calN}{\mathcal{N}}
+\newcommand{\calP}{\mathcal{P}}
 \newcommand{\calV}{\mathcal{V}}
 
 % mathscr --------------------------------------------------
@@ -76,9 +79,11 @@
 \newcommand{\bJ}{\mathop{}\!\mathsf{J}}
 \newcommand{\bY}{\mathop{}\!\mathsf{Y}}
 \newcommand{\Hu}{\mathop{}\!\mathsf{H}^{(1)}}
+\newcommand{\hu}{\mathop{}\!\mathsf{h}^{(1)}}
 \newcommand{\Hd}{\mathop{}\!\mathsf{H}^{(2)}}
 \newcommand{\bI}{\mathop{}\!\mathsf{I}}
 \newcommand{\bK}{\mathop{}\!\mathsf{K}}
+\newcommand{\outh}{\mathop{}\!\mathfrak{h}^{(1)}}
 
 % Operateurs ----------------------------------------------
 \newcommand{\di}[1]{\mathop{}\!\mathrm{d}#1}
@@ -86,6 +91,7 @@
 \DeclareMathOperator{\oo}{\mathcal{\scriptstyle O}}
 \DeclareMathOperator{\Div}{div}
 \DeclareMathOperator{\Rot}{\mathbf{curl}}
+\newcommand{\Ind}[1]{\mathop{}\!\mathbf{1}_{#1}}
 
 % delimiters ----------------------------------------------
 \newcommand{\plr}[1]{\left(#1\right)}
@@ -108,9 +114,8 @@
 
 
 % Titre ===================================================
-\title{Analytic computations for scattering}
+\title{claudius: analytic computations of scattering \\ \Large \emph{calculs analytiques pour la diffusion}}
 \author{Zoïs \textsc{Moitier}}
-
 
 %==========================================================
 \begin{document}
@@ -126,48 +131,111 @@
 \tableofcontents
 
 %================================
-\section{The scattering problems}
+\section{General settings}
 %================================
 
-% = = = = = = = = = = = = = =
-\subsection{Problem statement}
-% = = = = = = = = = = = = = =
+We consider the scattering by spherical cavities, disk or annulus in dimension $2$, and ball or spherical shell in dimension $3$.
+We call $\abs{\,\cdot\,}_d$ the euclidean norm in dimension $d = 2, 3$.
+Disk and ball are denoted by $\bbB_\rho^d = \{\vx \in \bbR^d \mid \abs{\vx}_d < \rho\}$ for $\rho > 0$, and annulus and spherical shell are denoted by $\bbA_{\rho, \sigma}^d = \{\vx \in \bbR^d \mid \rho < \abs{\vx}_d < \sigma\}$ for $0 < \rho < \sigma$.
+The cavities will be compose of concentric spherical shell with impenetrable or penetrable core and denoted by $\Omega$.
+For a cavity with impenetrable core and $N \ge 0$ layers, we have $\Omega = \bbA_{\rho_1, \rho_2}^d \cup \bbA_{\rho_2, \rho_3}^d \cup \cdots \cup \bbA_{\rho_N, \rho_{N+1}}^d$ with $0 < \rho_1 < \rho_2 < \cdots < \rho_{N+1}$.
+For a cavity with penetrable core and $N \ge 0$ layers, we have $\Omega = \bbB_{\rho_1}^d \cup \bbA_{\rho_1, \rho_2}^d \cup \cdots \cup \bbA_{\rho_N, \rho_{N+1}}^d$ with $0 = \rho_0 < \rho_1 < \cdots < \rho_{N+1}$.
+The boundary/interfaces $\Gamma$ of the different layers of the cavity $\Omega$ is compose of concentric spheres $\Gamma = \rho_1\bbS^{d-1} \cup \rho_2\bbS^{d-1} \cup \cdots \cup \rho_N\bbS^{d-1}$.
 
-Let $\bbD = \{\vx \in \bbR^2 \mid |\vx| < 1\}$ be the unit disk and $\bbA_\delta = \{\vx \in \bbR^2 \mid \delta < |\vx| < 1\}$ an annulus of width $1-\delta$ where $\delta \in (0, 1)$.
-The cavity $\Omega$ denote either $\bbD$ or $\bbA_\delta$ and the interface $\Gamma = \partial\Omega$ is the boundary of $\Omega$.
-We define the function $\eps \in \rmL^\infty(\bbR^2)$ (permittivity) and $\mu \in \rmL^\infty(\bbR^2)$ (permeability) as
+\bigskip
+
+We define the function $\eps \in \rmL^\infty(\bbR^d)$ and $\mu \in \rmL^\infty(\bbR^d)$ as
 \[
     \eps(\vx) = \begin{dcases}
-        \ecav(|\vx|) & \text{if } \vx \in \overline{\Omega}\\
+        \ecav\plr{\abs{\vx}_d} & \text{if } \vx \in \Omega\\
         1 & \text{otherwise}
     \end{dcases} \qquad
     \text{and} \qquad
     \mu(\vx) = \begin{dcases}
-        \mcav(|\vx|) & \text{if } \vx \in \overline{\Omega}\\
+        \mcav\plr{\abs{\vx}_d} & \text{if } \vx \in \Omega\\
         1 & \text{otherwise}
     \end{dcases}
 \]
-where $\ecav, \mcav \in \scrC^\infty(\overline{I}, \bbR^*)$ with $I = (0,1)$ or $I = (\delta, 1)$.
-Let $\calD^2 \coloneqq \{u \in \rmL^2(\bbR^2) \mid \Div(\eps^{-1} \nabla u) \in \rmL^2(\bbR^2)\}$ be the domain of the operator $u \mapsto -\mu^{-1}\Div(\eps^{-1} \nabla u)$ and we define the ``loc'' version
+where
 \[
-    \calD_\loc^2 \coloneqq \{u \in \rmL_\loc^2(\bbR^2) \mid \forall \chi \in \scrC_\comp^\infty(\bbR^2),\ \chi u \in \calD^2\}.
+    \ecav = \sum_{n = 0}^{N} \eps_n \Ind{(\rho_n, \rho_{n+1})} \qquad
+    \text{and} \qquad
+    \mcav = \sum_{n = 0}^{N} \mu_n \Ind{(\rho_n, \rho_{n+1})}
+\]
+with $\eps_n, \mu_n \in \scrC^\infty([\rho_n, \rho_{n+1}], \bbR^*)$ for $0 \le n \le N$.
+For the impenetrable case the index $n = 0$ is not use.
+In some context the function can be view as the permittivity ($\eps$) and the permeability ($\mu$) of a material.
+
+\bigskip
+
+A positive wavenumber is noted $k$.
+We only consider a plane wave incident field, we have $u^\inc : \vx \mapsto \exp(\im\, k\, \vect{\nu} \cdot \vx)$ with $\vect{\nu} \in \bbS^{d-1}$ the direction of the plane wave.
+In the following, the scattered field is noted $u^\sca$ and the total field is noted $u$.
+
+%================================
+\section{Helmholtz's equation}
+%================================
+
+We consider the operator $u \mapsto -\mu^{-1}\Div(\eps^{-1}\, \nabla u)$ of domain
+\[
+    D^{d, \eps} \coloneqq \{u \in \rmL^2(\bbR^d) \mid \Div(\eps^{-1}\, \nabla u) \in \rmL^2(\bbR^d)\}
+\]
+and we define the ``locale'' version
+\[
+    D_\loc^{d, \eps} \coloneqq \{u \in \rmL_\loc^2(\bbR^d) \mid \forall \chi \in \scrC_\comp^\infty(\bbR^d),\ \chi u \in D^{d, \eps}\}.
 \]
 
-We define the following scattering problem: Given a wavenumber $k > 0$ and an incident field $u^\inc : \vx \mapsto \ex^{\im\, k\, y}$, find the scattering field $u^\sca \in \calD_\loc^2$ such that the total field $u = u^\inc + u^\sca$ satisfy
-\begin{subequations}\label{prob:scattering}
-\begin{equation}\label{eq:scat_pde}
-    \begin{dcases}
+\bigskip
+
+We define the following scattering problem: Given a wavenumber $k > 0$ and an incident field $u^\inc$, find the scattering field $u^\sca \in D_\loc^{d, \eps}$ such that the total field $u = u^\inc + u^\sca$ satisfy
+\begin{equation}\label{eq:scat_pde_im}
+    (\calD / \calN)\begin{dcases}
         -\mu^{-1}\Div\plr{\eps^{-1} \nabla u} - k^2 u = 0 & \text{in } \Omega \text{ and } \bbR^2 \setminus \overline{\Omega}\\[1ex]
-        \clr{u}_\Gamma = 0 \ \text{and}\ \clr{\eps^{-1} \partial_{\vect{\nu}} u}_\Gamma = 0 & \text{across } \Gamma\\[1ex]
+        u = 0 \qquad \text{or} \qquad \partial_{\vect{n}}u = 0 & \text{on } \rho_1\bbS^{d-1}\\[1ex]
+        \clr{u} = 0 \ \text{and}\ \clr{\eps^{-1} \partial_{\vect{n}} u} = 0 & \text{across } \rho_2\bbS^{d-1} \cup \cdots \cup \rho_N\bbS^{d-1}\\[1ex]
         \text{$u^\sca$ is $k$-outgoing} 
     \end{dcases}
 \end{equation}
-where $\vect{\nu} : \Gamma \to \bbS^1$ is the exterior unit normal and $u^\sca$ is $k$-outgoing mean that for $|\vx| \ge 1$, there exist $(\beta_m)_{m \in \bbZ} \in \ell^2(\bbZ)$ such that
-\begin{equation}\label{eq:OWC}
-    u^\sca(\vx) = \sum_{m \in \bbZ} \beta_m\, \Hu_m(k\, r)\, \ex^{\im\, m\, \theta}
+in the Dirichlet ($\calD$) or Neumann ($\calN$) case and
+\begin{equation}\label{eq:scat_pde}
+    (\calP)\begin{dcases}
+        -\mu^{-1}\Div\plr{\eps^{-1} \nabla u} - k^2 u = 0 & \text{in } \Omega \text{ and } \bbR^2 \setminus \overline{\Omega}\\[1ex]
+        \clr{u} = 0 \ \text{and}\ \clr{\eps^{-1} \partial_{\vect{n}} u} = 0 & \text{across } \rho_1\bbS^{d-1} \cup \cdots \cup \rho_N\bbS^{d-1}\\[1ex]
+        \text{$u^\sca$ is $k$-outgoing} 
+    \end{dcases}
 \end{equation}
-with $(r, \theta) \in \bbR_+ \times \bbR / 2\pi\bbZ$ the polar coordinate associated to the Cartesian coordinates $\vx \in \bbR^2$ and $z \mapsto \Hu_m(z)$ is the Hankel function of the first kind of order $m$.
-\end{subequations}
+in the penetrable case, where $\vect{n} : \Gamma \to \bbS^{d-1}$ are the outward unit normal and $u^\sca$ is $k$-outgoing mean that for $|\vx| \ge \rho_N$, there exist $(g_m)_{m \in \bbN} \in \rmL^2(\bbS^{d-1})^{\bbN}$ such that
+\begin{equation}\label{eq:OWC}
+    u^\sca(\vx) = \sum_{m = 0}^{+\infty} \outh_m(k\, r)\, g_m(\omega)
+\end{equation}
+with $(r, \omega) \in \bbR_+ \times \bbS^{d-1}$ the spherical coordinate associated to the Cartesian coordinates $\vx \in \bbR^d$ and
+\begin{equation}
+    \outh_m(z) = \begin{dcases}
+        \Hu_m(z) & \text{for } d = 2\\
+        \hu_m(z) & \text{for } d = 3
+    \end{dcases}
+\end{equation}
+with $z \mapsto \Hu_m(z)$ (resp.\ $z \mapsto \hu_m(z)$) is the cylindrical (resp.\ spherical) Hankel function of the first kind of order $m$.
+
+%================================
+\section{Maxwell's equation}
+%================================
+
+\appendix
+
+%================================
+\section{Bessel functions}
+%================================
+
+\[
+    \hu_m(z) = \sqrt{\frac{\pi}{2z}} \Hu_{m+\frac{1}{2}}(z)
+\]
+
+%================================
+\section{The scattering problems}
+%================================
+
+
 
 % = = = = = = = = = = = = = =
 \subsection{1D reduction}
