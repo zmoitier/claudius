@@ -2,7 +2,7 @@ from sys import exit
 
 from numpy import cos, ones_like, sin, where, zeros_like
 
-from acswave import incident_field
+from claudius import incident_field
 
 
 def _partial_inner(α, C, R, Θ):

@@ -2,7 +2,7 @@ from sys import exit
 
 from numpy import array, isscalar
 
-from acswave import Helmholtz_2d, Helmholtz_3d, Maxwell_3d
+from claudius import Helmholtz_2d, Helmholtz_3d, Maxwell_3d
 
 
 def sc_field(sol, r, θ, φ=None):

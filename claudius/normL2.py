@@ -19,4 +19,4 @@ def normL2_rad(k, m, func, ρ):
 
 
 def normL2_disk(k, sol):
-    n
+    pass

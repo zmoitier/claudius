@@ -79,10 +79,17 @@
 \newcommand{\bJ}{\mathop{}\!\mathsf{J}}
 \newcommand{\bY}{\mathop{}\!\mathsf{Y}}
 \newcommand{\Hu}{\mathop{}\!\mathsf{H}^{(1)}}
-\newcommand{\hu}{\mathop{}\!\mathsf{h}^{(1)}}
 \newcommand{\Hd}{\mathop{}\!\mathsf{H}^{(2)}}
 \newcommand{\bI}{\mathop{}\!\mathsf{I}}
 \newcommand{\bK}{\mathop{}\!\mathsf{K}}
+
+\newcommand{\bj}{\mathop{}\!\mathsf{j}}
+\newcommand{\by}{\mathop{}\!\mathsf{y}}
+\newcommand{\hu}{\mathop{}\!\mathsf{h}^{(1)}}
+\newcommand{\hd}{\mathop{}\!\mathsf{h}^{(2)}}
+\newcommand{\bi}{\mathop{}\!\mathsf{i}}
+\newcommand{\bk}{\mathop{}\!\mathsf{k}}
+
 \newcommand{\outh}{\mathop{}\!\mathfrak{h}^{(1)}}
 
 % Operateurs ----------------------------------------------
@@ -130,9 +137,9 @@
 
 \tableofcontents
 
-%================================
+%=========================
 \section{General settings}
-%================================
+%=========================
 
 We consider the scattering by spherical cavities, disk or annulus in dimension $2$, and ball or spherical shell in dimension $3$.
 We call $\abs{\,\cdot\,}_d$ the euclidean norm in dimension $d = 2, 3$.
@@ -172,9 +179,13 @@ A positive wavenumber is noted $k$.
 We only consider a plane wave incident field, we have $u^\inc : \vx \mapsto \exp(\im\, k\, \vect{\nu} \cdot \vx)$ with $\vect{\nu} \in \bbS^{d-1}$ the direction of the plane wave.
 In the following, the scattered field is noted $u^\sca$ and the total field is noted $u$.
 
-%================================
+%=============================
 \section{Helmholtz's equation}
-%================================
+%=============================
+
+%----------------------------------
+\subsection{The scattering problem}
+%----------------------------------
 
 We consider the operator $u \mapsto -\mu^{-1}\Div(\eps^{-1}\, \nabla u)$ of domain
 \[
@@ -196,7 +207,7 @@ We define the following scattering problem: Given a wavenumber $k > 0$ and an in
         \text{$u^\sca$ is $k$-outgoing} 
     \end{dcases}
 \end{equation}
-in the Dirichlet ($\calD$) or Neumann ($\calN$) case and
+in the Dirichlet ($\calD$) or Neumann ($\calN$) case, or
 \begin{equation}\label{eq:scat_pde}
     (\calP)\begin{dcases}
         -\mu^{-1}\Div\plr{\eps^{-1} \nabla u} - k^2 u = 0 & \text{in } \Omega \text{ and } \bbR^2 \setminus \overline{\Omega}\\[1ex]
@@ -204,54 +215,157 @@ in the Dirichlet ($\calD$) or Neumann ($\calN$) case and
         \text{$u^\sca$ is $k$-outgoing} 
     \end{dcases}
 \end{equation}
-in the penetrable case, where $\vect{n} : \Gamma \to \bbS^{d-1}$ are the outward unit normal and $u^\sca$ is $k$-outgoing mean that for $|\vx| \ge \rho_N$, there exist $(g_m)_{m \in \bbN} \in \rmL^2(\bbS^{d-1})^{\bbN}$ such that
-\begin{equation}\label{eq:OWC}
-    u^\sca(\vx) = \sum_{m = 0}^{+\infty} \outh_m(k\, r)\, g_m(\omega)
-\end{equation}
-with $(r, \omega) \in \bbR_+ \times \bbS^{d-1}$ the spherical coordinate associated to the Cartesian coordinates $\vx \in \bbR^d$ and
-\begin{equation}
-    \outh_m(z) = \begin{dcases}
-        \Hu_m(z) & \text{for } d = 2\\
-        \hu_m(z) & \text{for } d = 3
-    \end{dcases}
-\end{equation}
-with $z \mapsto \Hu_m(z)$ (resp.\ $z \mapsto \hu_m(z)$) is the cylindrical (resp.\ spherical) Hankel function of the first kind of order $m$.
+in the penetrable case, where $\vect{n} : \Gamma \to \bbS^{d-1}$ are the outward unit normal and $u^\sca$ is $k$-outgoing mean that for $|\vx| \ge \rho_N$, there exist $\beta$ such that
+\begin{subequations}\label{eq:OWC}
+\begin{align}
+    u^\sca(\vx) &= \sum_{m \in \bbZ} \beta_m\, \Hu_m(k\, r)\, \ex^{\im\, m\, \theta} && d = 2\\
+    u^\sca(\vx) &= \sum_{\ell = 0}^{+\infty} \sum_{m = -\ell}^\ell \beta_\ell^m\, \hu_\ell(k\, r)\, Y_\ell^m(\theta,\phi) && d = 3
+\end{align}
+\end{subequations}
+with $(r, \theta) \in \bbR_+ \times \bbR / 2\pi\bbZ$ the polar coordinate, 
+$(r, \theta, \phi) \in \bbR_+ \times [0, \pi] \times \bbR / 2\pi\bbZ$ the spherical coordinate, $Y_\ell^m$ the spherical harmonic, and $z \mapsto \Hu_m(z)$ (resp.\ $z \mapsto \hu_m(z)$) is the cylindrical (resp.\ spherical) Hankel function of the first kind of order $m$.
 
-%================================
+%----------------------------
+\subsection{The 1d reduction}
+%----------------------------
+
+%===========================
 \section{Maxwell's equation}
-%================================
+%===========================
 
 \appendix
 
-%================================
-\section{Bessel functions}
-%================================
+%======================
+\section{Miscellaneous}
+%======================
 
+%-----------------------
+\subsection{Coordinates}
+%-----------------------
+
+%
+\subsubsection{Polar}
+%
+
+In dimension two, the Cartesian coordinate $\vx = (x, y) \in \bbR^2$ are describe in term of polar coordinate $(r, \theta) \in \bbR_+ \times \bbR / 2\pi\bbZ$ by
 \[
-    \hu_m(z) = \sqrt{\frac{\pi}{2z}} \Hu_{m+\frac{1}{2}}(z)
+    \begin{dcases}
+        x = r \cos(\theta)\\
+        y = r \sin(\theta)
+    \end{dcases} \qquad
+    \text{and} \qquad
+    \begin{dcases}
+        r = \sqrt{x^2 + y^2}\\
+        \theta = \arg(x + \im y)
+    \end{dcases}
 \]
+
+%
+\subsubsection{Spherical}
+%
+
+In dimension three, the Cartesian coordinate $\vx = (x, y, z) \in \bbR^3$ are describe in term of spherical coordinate $(r, \theta, \phi) \in \bbR_+ \times [0, \pi] \times \bbR / 2\pi\bbZ$ by
+\[
+    \begin{dcases}
+        x = r \sin(\theta) \cos(\phi)\\
+        y = r \sin(\theta) \sin(\phi)\\
+        z = r \cos(\theta)
+    \end{dcases} \qquad
+    \text{and} \qquad
+    \begin{dcases}
+        r = \sqrt{x^2 + y^2 + z^2}\\
+        \theta = \arccos\plr{\frac{z}{r}}\\
+        \phi = \arg(x + \im y)
+    \end{dcases}.
+\]
+
+%------------------------------
+\subsection{Bessel's functions}
+%------------------------------
+
+%
+\subsubsection{Cylindrical}
+%
+
+The cylindrical Bessel's function $\bJ_m$, $\bY_m$, $\Hu_m$, and $\Hd_m$ are define in \cite[Sec.~10.2]{NIST:DLMF} and they are solutions of the ODE
+\[
+    -\frac{1}{z}\plr{z\, w'}' + \frac{m^2}{z^2}w - w = 0.
+\]
+The cylindrical modified Bessel's function $\bI_m$ and $\bK_m$ are define in \cite[Sec.~10.25]{NIST:DLMF} and they are solutions of the ODE
+\[
+    -\frac{1}{z}\plr{z\, w'}' + \frac{m^2}{z^2}w + w = 0.
+\]
+
+%
+\subsubsection{Spherical}
+%
+
+The spherical Bessel's function $\bj_m$, $\by_m$, $\hu_m$, $\hd_m$ ($-$) and $\bi_m$, $\bk_m$ ($+$) are define in \cite[Sec.~10.47]{NIST:DLMF} and they are solutions of the ODE
+\[
+    -\frac{1}{z^2}\plr{z^2\, w'}' + \frac{\ell(\ell+1)}{z^2}w \mp w = 0
+\]
+We have the following relation between the cylindrical and spherical Bessel function
+\[
+    \mathsf{f}_\ell(z) = \sqrt{\frac{\pi}{2z}} \mathsf{F}_{\ell+\frac{1}{2}}(z)
+\]
+where the couples $(\mathsf{f}, \mathsf{F})$ are $(\bj, \bJ)$, $(\by, \bY)$, $(\hu, \Hu)$, $(\hd, \Hd)$, $(\bi, \bI)$, and $(\bk, \bK)$.
+
+%------------------------------
+\subsection{Spherical harmonic}
+%------------------------------
+
+For $\ell \in \bbN$ and $m \in \{-\ell, \ldots, 0, \ldots, \ell\}$, the spherical harmonic $Y_\ell^m$ in the spherical coordinate is define by
+\[
+    Y_\ell^m(\theta, \phi) = (-1)^m\, \sqrt{\frac{2\ell+1}{4\pi}\, \frac{(\ell-m)!}{(\ell+m)!}}\, P_\ell^m(\cos(\theta))\, \ex^{\im\, m\, \phi}
+\]
+where $P_\ell^m$ are the associated Legendre polynomial define by
+\[
+    P_\ell^m(x) = \frac{1}{2^\ell\, \ell!}\, (1-x^2)^{\frac{m}{2}}\, \partial_x^{\ell+m} (x^2-1)^\ell.
+\]
+
+%--------------------------------------------------
+\subsection{Spherical wave expansion of plane wave}
+%--------------------------------------------------
+
+The Jacobi-Anger expansion \cite[Eq.~10.12.1]{NIST:DLMF} states that, for $z \in \bbC$ and $t \in \bbC^*$,
+\begin{equation}\label{eq:JacobiAngerExpansion}
+    \ex^{\frac{z}{2}(t-t^{-1})} = \sum_{m \in \bbZ} \bJ_m(z)\, t^m.
+\end{equation}
+Which give the following expansion for a 2d plane wave
+\begin{equation}
+    \ex^{\im\, k\, y} = \sum_{m \in \bbZ} \bJ_m(k\, r)\, \ex^{\im\, m\, \theta}
+\end{equation}
+where $(x, y)$ are the Cartesian coordinates and $(r, \theta)$ the corresponding polar coordinates.
+
+We have the following expansion for a 3d plane wave
+\begin{equation}
+    \ex^{\im\, k\, \vect{\nu} \cdot \vx} = 4\pi \sum_{\ell = 0}^{+\infty} \im^\ell\, \bj_\ell(k\, r) \sum_{m = -\ell}^\ell Y_\ell^m(\vect{\nu}) \overline{Y_\ell^m(\omega)}
+\end{equation}
+where $(x, y)$ are the Cartesian coordinates and $(r, \theta)$ the corresponding polar coordinates.
+
+
+\bibliographystyle{alpha}
+\bibliography{references}
+
+
+%##############################################################################
+\newpage
+%##############################################################################
 
 %================================
 \section{The scattering problems}
 %================================
 
-
-
 % = = = = = = = = = = = = = =
 \subsection{1D reduction}
 % = = = = = = = = = = = = = =
 
-We look for solution of problem \eqref{prob:scattering} of the form
+We look for solution of problem of the form
 \[
     u(\vx) = \sum_{m \in \bbZ} w_m(r)\, \ex^{\im\, m\, \theta} \qquad
     \text{where } w_m(r) \coloneqq \frac{1}{2\pi} \int_0^{2\pi} u(r,\theta)\, \ex^{-\im\, m\, \theta} \di{\theta}.
 \]
 Similarly we write $u^\inc(\vx) = \sum_{m \in \bbZ} w_m^\inc(r)\, \ex^{\im\, m\, \theta}$ and $u^\sca(\vx) = \sum_{m \in \bbZ} w_m^\sca(r)\, \ex^{\im\, m\, \theta}$.
-For the incident field, we have $w_m^\inc(r) = \bJ_m(k\, r)$ because the Jacobi-Anger expansion \cite[Eq.~10.12.1]{NIST:DLMF} states that
-\begin{equation}\label{eq:JacobiAngerExpansion}
-    u^\inc(\vx) = \ex^{\im k\, y} = \sum_{m \in \bbZ} \bJ_m(k\, r)\, \ex^{\im\, m\, \theta}
-\end{equation}
-where $z \mapsto \bJ_m(z)$ is the Bessel function of the first kind.
 The series in equation \eqref{eq:JacobiAngerExpansion} converges absolutely on every compact set of $\bbR^2$.
 
 The domain of the operator $w \mapsto -r^{-1}\, \mu^{-1} \partial_r(r\, \eps^{-1} \partial_r w) + m^2\, r^{-2}\, \eps^{-1}\mu^{-1} w$ and its ``loc'' version are define by
@@ -260,7 +374,7 @@ The domain of the operator $w \mapsto -r^{-1}\, \mu^{-1} \partial_r(r\, \eps^{-1
     \calD^{1, m}_\loc &\coloneqq \{w \in \rmL^2(\bbR_+^*, r\di{r}) \mid \forall \chi \in \scrC_\comp^\infty(\bbR),\ \chi w \in \calD^{1, m}\}.
 \end{align*}
 
-Problem \ref{prob:scattering} reduce to a family of problem index by $m \in \bbZ$: Given $k > 0$ find $w_m^\sca \in \calD^{1, m}_\loc$ such that $w_m = w_m^\inc + w_m^\sca$ and
+Problem reduce to a family of problem index by $m \in \bbZ$: Given $k > 0$ find $w_m^\sca \in \calD^{1, m}_\loc$ such that $w_m = w_m^\inc + w_m^\sca$ and
 \begin{equation}\label{prob:w_scattering}
      \begin{dcases}
         -\frac{1}{r\, \mu} \partial_r\plr{\frac{r}{\eps}\, \partial_r w_m} + \dfrac{m^2}{r^2\, \eps\mu} w_m - k^2\, w_m = 0 & \text{in } I \text{ and } \bbR^* \setminus \overline{I}      \\
@@ -406,9 +520,5 @@ where $z \mapsto \bK_m(z)$ is the modified Bessel of the second kind.
 % = = = = = = = = = = = = = =
 \subsection{The flat well version}
 % = = = = = = = = = = = = = =
-
-
-\bibliographystyle{alpha}
-\bibliography{references}
 
 \end{document}

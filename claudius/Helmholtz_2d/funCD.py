@@ -1,6 +1,6 @@
 from scipy.special import iv, ivp, jv, jvp, kv, kvp, yv, yvp
 
-from acswave import εμ_to_n, εμ_to_η
+from claudius import εμ_to_n, εμ_to_η
 
 
 def CD_cst(ε, μ, k):

@@ -2,10 +2,9 @@ from sys import argv
 
 import matplotlib.pyplot as plt
 import numpy as np
+from acswave.Helmholtz_2d import CD_cst, CD_cst_der
 from context import acswave as acs
 from scipy.special import hankel1, jv
-
-from acswave.Helmholtz_2d import CD_cst, CD_cst_der
 
 k = float(argv[1])
 T = 2

@@ -1,21 +1,30 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import acswave as acs
-from acswave.Helmholtz_2d import CD_cst, CD_cst_der
+import claudius as acs
+from claudius.Helmholtz_2d import CD_cst, CD_cst_der
 
 dim = 2
 pde = "H"
-type = "P"
+type = "N"
 radii = (0.5, 0.75, 1)
-εμc = (
-    (lambda r: np.ones_like(r), lambda r: np.ones_like(r)),
-    (lambda r: np.ones_like(r), lambda r: np.ones_like(r)),
-    (lambda r: np.ones_like(r), lambda r: np.ones_like(r)),
-)
 k = 5
-fun = (CD_cst(1, 1, k)[0], CD_cst(1, 1, k), CD_cst(1, 1, k))
-fun_der = (CD_cst_der(1, 1, k)[0], CD_cst_der(1, 1, k), CD_cst_der(1, 1, k))
+if type.startswith("P"):
+    εμc = (
+        (lambda r: np.ones_like(r), lambda r: np.ones_like(r)),
+        (lambda r: 2 * np.ones_like(r), lambda r: np.ones_like(r)),
+        (lambda r: 1.5 * np.ones_like(r), lambda r: -np.ones_like(r)),
+    )
+
+    fun = (CD_cst(1, 1, k)[0], CD_cst(1, 1, k), CD_cst(1, 1, k))
+    fun_der = (CD_cst_der(1, 1, k)[0], CD_cst_der(1, 1, k), CD_cst_der(1, 1, k))
+else:
+    εμc = (
+        (lambda r: 2 * np.ones_like(r), lambda r: np.ones_like(r)),
+        (lambda r: 1.5 * np.ones_like(r), lambda r: -np.ones_like(r)),
+    )
+    fun = (CD_cst(1, 1, k), CD_cst(1, 1, k))
+    fun_der = (CD_cst_der(1, 1, k), CD_cst_der(1, 1, k))
 
 M = acs.M_trunc_2d(k, 2)
 prob = acs.create_probem(dim, pde, type, radii, εμc, k, fun, fun_der)

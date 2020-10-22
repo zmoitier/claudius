@@ -4,7 +4,7 @@ from numpy import arange, array, expand_dims, zeros
 from numpy.linalg import solve
 from scipy.special import jv, jvp
 
-from acswave import Solution
+from claudius import Solution
 
 
 def _calc_F(n, vm, k, R):
