@@ -6,7 +6,7 @@ from claudius.Helmholtz_2d import CD_cst, CD_cst_der
 
 dim = 2
 pde = "H"
-type = "N"
+type = "P"
 radii = (0.5, 0.75, 1)
 k = 5
 if type.startswith("P"):
@@ -30,6 +30,7 @@ M = acs.M_trunc_2d(k, 2)
 prob = acs.create_probem(dim, pde, type, radii, εμc, k, fun, fun_der)
 
 acs.plot_geometry(prob)
+acs.plot_potential(prob, 0.5, ylim=(-2, 6))
 
 """
 sol = acs.solve_prob(prob, M)

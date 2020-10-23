@@ -1,6 +1,6 @@
 # claudius: Analytic computations for scattering
 
-Python toolbox to compute scattering and total field when we have analytical computation so typically when scatter is invariant by rotation.
+Python toolbox to compute scattering and total field when we have analytical computation so typically when scatters are invariant by rotation and the incident field is a plane wave.
 
 The word _claudius_ is an acronym for _CaLculs AnalytiqUes pour la DIffUSion_ the French translation of analytic computations for scattering.
 
