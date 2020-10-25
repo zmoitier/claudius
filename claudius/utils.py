@@ -3,7 +3,7 @@ from sys import exit
 
 from numba import complex64, complex128, float32, float64, vectorize
 from numpy import abs, amax, arange, e, exp, sin, sqrt, where
-from scipy.special import jv
+from scipy.special import jv, spherical_jn
 
 
 @vectorize([float64(complex128), float32(complex64)])
@@ -19,9 +19,15 @@ def εμ_to_η(ε, μ):
     return sqrt(-ε * μ)
 
 
-def M_trunc_2d(k, T):
+def trunc_H2d(k, T):
     m = arange(ceil(16 + e * k * T / 2))
     I = where(abs(jv(m, k * T)) >= 1e-8)[0]
+    return I[-1]
+
+
+def trunc_H3d(k, T):
+    m = arange(ceil(16.5 + e * k * T / 2))
+    I = where(abs(spherical_jn(m, k * T)) >= 1e-8)[0]
     return I[-1]
 
 

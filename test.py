@@ -1,3 +1,5 @@
+from sys import argv
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -6,42 +8,31 @@ from claudius.Helmholtz_2d import CD_cst, CD_cst_der
 
 dim = 2
 pde = "H"
-type = "P"
-radii = (0.5, 0.75, 1)
+inn_bdy = "P"
+N = int(argv[1])
 k = 5
-if type.startswith("P"):
-    εμc = (
-        (lambda r: np.ones_like(r), lambda r: np.ones_like(r)),
-        (lambda r: 2 * np.ones_like(r), lambda r: np.ones_like(r)),
-        (lambda r: 1.5 * np.ones_like(r), lambda r: -np.ones_like(r)),
-    )
 
-    fun = (CD_cst(1, 1, k)[0], CD_cst(1, 1, k), CD_cst(1, 1, k))
-    fun_der = (CD_cst_der(1, 1, k)[0], CD_cst_der(1, 1, k), CD_cst_der(1, 1, k))
+if N == 0:
+    radii = (1,)
 else:
-    εμc = (
-        (lambda r: 2 * np.ones_like(r), lambda r: np.ones_like(r)),
-        (lambda r: 1.5 * np.ones_like(r), lambda r: -np.ones_like(r)),
+    radii = tuple(np.linspace(0.5, 1, num=N + 1))
+
+if inn_bdy.startswith("P"):
+    εμc = tuple(
+        (lambda r: np.ones_like(r), lambda r: np.ones_like(r)) for n in range(N + 1)
     )
-    fun = (CD_cst(1, 1, k), CD_cst(1, 1, k))
-    fun_der = (CD_cst_der(1, 1, k), CD_cst_der(1, 1, k))
+    fun = (CD_cst(1, 1, k)[0], *(CD_cst(1, 1, k) for n in range(N)))
+    fun_der = (CD_cst_der(1, 1, k)[0], *(CD_cst_der(1, 1, k) for n in range(N)))
+else:
+    εμc = tuple(
+        (lambda r: np.ones_like(r), lambda r: np.ones_like(r)) for n in range(N)
+    )
+    fun = tuple(CD_cst(1, 1, k) for n in range(N))
+    fun_der = tuple(CD_cst_der(1, 1, k) for n in range(N))
 
-M = acs.M_trunc_2d(k, 2)
-prob = acs.create_probem(dim, pde, type, radii, εμc, k, fun, fun_der)
+M = acs.trunc_H2d(k, 2)
+prob = acs.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
 
-acs.plot_geometry(prob)
-acs.plot_potential(prob, 0.5, ylim=(-2, 6))
-
-"""
 sol = acs.solve_prob(prob, M)
-
-r = np.linspace(0.25, 1.25, num=16)
-θ = np.linspace(0, 2 * np.pi, num=16, endpoint=False)
-R, Θ = np.meshgrid(r, θ)
-
-us = acs.tt_field(sol, R, Θ)
-plt.imshow(np.real(us))
-plt.colorbar()
-
-plt.show()
-"""
+for v in range(np.size(sol.coeff, 1)):
+    print(sol.coeff[:, v])

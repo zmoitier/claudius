@@ -1,136 +1,133 @@
-from sys import exit
-
-from numpy import arange, array, expand_dims, zeros
+from numpy import arange, expand_dims, size, zeros
 from numpy.linalg import solve
-from scipy.special import jv, jvp
+from scipy.special import jv, jvp, spherical_jn
 
 from claudius import Solution
 
 
-def _calc_F(n, vm, k, R):
-    F = zeros((len(vm), n))
-    F[:, -2] = jv(vm, k * R)
-    F[:, -1] = k * jvp(vm, k * R)
-    return F
-
-
-def _calc_A_I(inn_bdy, n, vm, δ, εμ, k, fun, fun_der):
-    A = zeros((len(vm), n, n), dtype=complex)
-
-    if inn_bdy.startswith("N"):
-        A[:, 0, 0] = fun_der[0][0](vm, δ[0])
-        A[:, 0, 1] = fun_der[0][1](vm, δ[0])
-    else:
-        A[:, 0, 0] = fun[0][0](vm, δ[0])
-        A[:, 0, 1] = fun[0][1](vm, δ[0])
-
-    for i, r in enumerate(δ[1:-1]):
-        j = 2 * i
-        A[:, j + 1, j] = fun[i][0](vm, r)
-        A[:, j + 1, j + 1] = fun[i][1](vm, r)
-        A[:, j + 1, j + 2] = -fun[i + 1][0](vm, r)
-        A[:, j + 1, j + 3] = -fun[i + 1][1](vm, r)
-
-        A[:, j + 2, j] = fun_der[i][0](vm, r) / εμ[i][0](r)
-        A[:, j + 2, j + 1] = fun_der[i][1](vm, r) / εμ[i][0](r)
-        A[:, j + 2, j + 2] = -fun_der[i + 1][0](vm, r) / εμ[i + 1][0](r)
-        A[:, j + 2, j + 3] = -fun_der[i + 1][1](vm, r) / εμ[i + 1][0](r)
-
-    A[:, -2, -3] = fun[-2][0](vm, δ[-1])
-    A[:, -2, -2] = fun[-2][1](vm, δ[-1])
-    A[:, -2, -1] = -fun[-1](vm, δ[-1])
-
-    A[:, -1, -3] = fun_der[-2][0](vm, δ[-1]) / εμ[-1][0](δ[-1])
-    A[:, -1, -2] = fun_der[-2][1](vm, δ[-1]) / εμ[-1][0](δ[-1])
-    A[:, -1, -1] = -fun_der[-1](vm, δ[-1])
-
-    return A
-
-
-def _calc_A_P(n, vm, δ, εμ, k, fun, fun_der):
-    A = zeros((len(vm), n, n), dtype=complex)
-
-    if n == 2:
-        A[:, 0, 0] = fun[0](vm, δ[0])
-        A[:, 0, 1] = -fun[1](vm, δ[0])
-
-        A[:, 1, 0] = fun_der[0](vm, δ[0]) / εμ[0][0](δ[0])
-        A[:, 1, 1] = -fun_der[1](vm, δ[0])
-
-    else:
-        A[:, 0, 0] = fun[0](vm, δ[0])
-        A[:, 0, 1] = -fun[1][0](vm, δ[0])
-        A[:, 0, 2] = -fun[1][1](vm, δ[0])
-
-        A[:, 1, 0] = fun_der[0](vm, δ[0]) / εμ[0][0](δ[0])
-        A[:, 1, 1] = -fun_der[1][0](vm, δ[0]) / εμ[1][0](δ[0])
-        A[:, 1, 2] = -fun_der[1][1](vm, δ[0]) / εμ[1][0](δ[0])
-
-        for i, r in enumerate(δ[1:-1], start=1):
-            j = 2 * i
-            A[:, j, j - 1] = fun[i][0](vm, r)
-            A[:, j, j] = fun[i][1](vm, r)
-            A[:, j, j + 1] = -fun[i + 1][0](vm, r)
-            A[:, j, j + 2] = -fun[i + 1][1](vm, r)
-
-            A[:, j + 1, j - 1] = fun_der[i][0](vm, r) / εμ[i][0](r)
-            A[:, j + 1, j] = fun_der[i][1](vm, r) / εμ[i][0](r)
-            A[:, j + 1, j + 1] = -fun_der[i + 1][0](vm, r) / εμ[i + 1][0](r)
-            A[:, j + 1, j + 2] = -fun_der[i + 1][1](vm, r) / εμ[i + 1][0](r)
-
-        A[:, -2, -3] = fun[-2][0](vm, δ[-1])
-        A[:, -2, -2] = fun[-2][1](vm, δ[-1])
-        A[:, -2, -1] = -fun[-1](vm, δ[-1])
-
-        A[:, -1, -3] = fun_der[-2][0](vm, δ[-1]) / εμ[-1][0](δ[-1])
-        A[:, -1, -2] = fun_der[-2][1](vm, δ[-1]) / εμ[-1][0](δ[-1])
-        A[:, -1, -1] = -fun_der[-1](vm, δ[-1])
-
-    return A
-
-
-def _solve_2HI(prob, vm):
-    δ = array(prob.radii)
-
-    if len(δ) == 1:
-        if prob.inn_bdy.startswith("N"):
-            return Solution(
-                *prob,
-                expand_dims(
-                    -prob.k * jvp(vm, prob.k * δ[0]) / prob.fun_der[0](vm, δ[0]), axis=1
-                )
-            )
+def _plane_wave(pde, d, k):
+    if pde.startswith("H"):
+        if d == 2:
+            return (lambda m, r: jv(m, k * r), lambda m, r: k * jvp(m, k * r))
         else:
-            return Solution(
-                *prob,
-                expand_dims(-jv(vm, prob.k * δ[0]) / prob.fun[0](vm, δ[0]), axis=1)
+            return (
+                lambda l, r: spherical_jn(l, k * r),
+                lambda l, r: k * spherical_jn(l, k * r, derivative=True),
             )
-
     else:
-        nbu = 2 * len(δ) - 1
-        A = _calc_A_I(prob.inn_bdy, nbu, vm, δ, prob.εμ, prob.k, prob.fun, prob.fun_der)
-        F = _calc_F(nbu, vm, prob.k, δ[-1])
-        return Solution(*prob, solve(A, F))
+        pass
 
 
-def _solve_2HP(prob, vm):
-    δ = array(prob.radii)
-    nbu = 2 * len(δ)
-    A = _calc_A_P(nbu, vm, δ, prob.εμ, prob.k, prob.fun, prob.fun_der)
-    F = _calc_F(nbu, vm, prob.k, δ[-1])
-    return Solution(*prob, solve(A, F))
+def _calc_mat(shape, m, ρ, εμ, fun, fun_der, shift):
+    A = zeros(shape, dtype=complex)
+
+    for n, (
+        ρn,
+        (εl, _),
+        (εr, _),
+        (fl0, gl0),
+        (fl1, gl1),
+        (fr0, gr0),
+        (fr1, gr1),
+    ) in enumerate(
+        zip(
+            ρ[1:-1],
+            εμ[shift:-1],
+            εμ[(shift + 1) :],
+            fun[shift:-2],
+            fun_der[shift:-2],
+            fun[(shift + 1) : -1],
+            fun_der[(shift + 1) : -1],
+        )
+    ):
+        A[:, 2 * n, 2 * n] = fl0(m, ρn)
+        A[:, 2 * n, 2 * n + 1] = gl0(m, ρn)
+        A[:, 2 * n, 2 * n + 2] = -fr0(m, ρn)
+        A[:, 2 * n, 2 * n + 3] = -gr0(m, ρn)
+
+        A[:, 2 * n + 1, 2 * n] = fl1(m, ρn) / εl(ρn)
+        A[:, 2 * n + 1, 2 * n + 1] = gl1(m, ρn) / εl(ρn)
+        A[:, 2 * n + 1, 2 * n + 2] = -fr1(m, ρn) / εr(ρn)
+        A[:, 2 * n + 1, 2 * n + 3] = -gr1(m, ρn) / εr(ρn)
+
+    A[:, -2, -3] = fun[-2][0](m, ρ[-1])
+    A[:, -2, -2] = fun[-2][1](m, ρ[-1])
+    A[:, -2, -1] = -fun[-1](m, ρ[-1])
+
+    A[:, -1, -3] = fun_der[-2][0](m, ρ[-1]) / εμ[-1][0](ρ[-1])
+    A[:, -1, -2] = fun_der[-2][1](m, ρ[-1]) / εμ[-1][0](ρ[-1])
+    A[:, -1, -1] = -fun_der[-1](m, ρ[-1])
+
+    return A
 
 
 def solve_prob(prob, M):
+    ρ = prob.radii
+    εμ = prob.εμ
+    k = prob.k
+    fun = prob.fun
+    fun_der = prob.fun_der
+
+    fj0, fj1 = _plane_wave(prob.pde, prob.dim, k)
+
+    N = len(prob.radii) - 1  # Number of layers
     m = arange(M + 1)
-    if (
-        (prob.dim == 2)
-        and prob.pde.startswith("H")
-        and (prob.inn_bdy.startswith("D") or prob.inn_bdy.startswith("N"))
-    ):
-        return _solve_2HI(prob, m)
 
-    if (prob.dim == 2) and prob.pde.startswith("H") and prob.inn_bdy.startswith("P"):
-        return _solve_2HP(prob, m)
+    if prob.inn_bdy.startswith("P"):
+        if N == 0:
+            A = zeros((M + 1, 2, 2), dtype=complex)
 
-    exit("Error in solve_prob")
+            A[:, 0, 0] = fun[0](m, ρ[0])
+            A[:, 0, 1] = -fun[1](m, ρ[0])
+
+            A[:, 1, 0] = fun_der[0](m, ρ[0]) / εμ[0][0](ρ[0])
+            A[:, 1, 1] = -fun_der[1](m, ρ[0])
+
+        else:
+            nbi = 2 * len(ρ)
+            A = zeros((M + 1, nbi, nbi), dtype=complex)
+
+            A[:, 0, 0] = fun[0](m, ρ[0])
+            A[:, 0, 1] = -fun[1][0](m, ρ[0])
+            A[:, 0, 2] = -fun[1][1](m, ρ[0])
+
+            A[:, 1, 0] = fun_der[0](m, ρ[0]) / εμ[0][0](ρ[0])
+            A[:, 1, 1] = -fun_der[1][0](m, ρ[0]) / εμ[1][0](ρ[0])
+            A[:, 1, 2] = -fun_der[1][1](m, ρ[0]) / εμ[1][0](ρ[0])
+
+            A[:, 2:, 1:] = _calc_mat(
+                (M + 1, nbi - 2, nbi - 1), m, ρ, εμ, fun, fun_der, 1
+            )
+
+    else:
+        if N == 0:
+            if prob.inn_bdy.startswith("D"):
+                return Solution(
+                    *prob, expand_dims(-fj0(m, k * ρ[0]) / fun[0](m, ρ[0]), axis=1)
+                )
+            else:
+                return Solution(
+                    *prob,
+                    expand_dims(-k * fj1(m, k * ρ[0]) / fun_der[0](m, ρ[0]), axis=1)
+                )
+
+        else:
+            nbi = 2 * len(ρ) - 1
+            A = zeros((M + 1, nbi, nbi), dtype=complex)
+
+            if prob.inn_bdy.startswith("D"):
+                A[:, 0, 0] = fun[0][0](m, ρ[0])
+                A[:, 0, 1] = fun[0][1](m, ρ[0])
+            else:
+                A[:, 0, 0] = fun_der[0][0](m, ρ[0])
+                A[:, 0, 1] = fun_der[0][1](m, ρ[0])
+
+            A[:, 1:, :] = _calc_mat((M + 1, nbi - 1, nbi), m, ρ, εμ, fun, fun_der, 0)
+
+    print((A[0].real != 0) * 1)
+
+    F = zeros((M + 1, size(A, 1)))
+    F[:, -2] = fj0(m, ρ[-1])
+    F[:, -1] = fj1(m, ρ[-1])
+
+    return Solution(*prob, solve(A, F))

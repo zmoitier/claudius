@@ -2,13 +2,9 @@
 
 Python toolbox to compute scattering and total field when we have analytical computation so typically when scatters are invariant by rotation and the incident field is a plane wave.
 
-The word _claudius_ is an acronym for _CaLculs AnalytiqUes pour la DIffUSion_ the French translation of analytic computations for scattering.
+The word _claudius_ is an acronym for _CaLculs AnalytiqUes pour la DIffUSion des ondes_ the French translation of analytic computations for scattering or it can also be an acronym for _Computing anaLyticAlly and Uniquely Diverse fIeld Used in Scattering_.
 
-## 2D Helmholtz
-
-Given a wavenumber $k > 0$ and an incident field $u^{\mathsf{in}} : (x,y) \mapsto \mathsf{e}^{\mathsf{i} k y}$. Find the scattering field $u^{\mathsf{sc}} \in \mathrm{H}^1(\mathbb{R})$ such that the total field $u = u^{\mathsf{in}} + u^{\mathsf{sc}}$ satisfy $-\mu^{-1}\mathrm{div}(\varepsilon^{-1}\, \nabla u) - k^2 u = 0$, $[u]_\Gamma = 0$, $[\varepsilon^{-1}\, \partial_n u]_\Gamma = 0$, and $u$ is $k$-outgoing.
-
-## 3D Helmholtz
+## 2D/3D Helmholtz
 
 ## 3D Maxwell
 

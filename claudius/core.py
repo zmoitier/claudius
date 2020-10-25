@@ -1,7 +1,7 @@
 from dataclasses import astuple, dataclass
 from sys import exit
 
-from numpy import ndarray
+from numpy import ndarray, pi, sqrt
 from scipy.special import h1vp, hankel1
 
 
@@ -58,7 +58,18 @@ def create_probem(dim, pde, inn_bdy, radii, εμ, k, func, func_der):
 
     if dim == 3:
         if pde.startswith("H"):
-            pass
+            fun = (
+                *func,
+                lambda l, r: spherical_jn(l, k * r) + 1j * spherical_yn(l, k * r),
+            )
+            fun_der = (
+                *func_der,
+                lambda l, r: k
+                * (
+                    spherical_jn(l, k * r, derivative=True)
+                    + 1j * spherical_yn(l, k * r, derivative=True)
+                ),
+            )
 
         if pde.startswith("M"):
             pass
