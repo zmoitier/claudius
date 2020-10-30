@@ -1,8 +1,8 @@
 from dataclasses import astuple, dataclass
 from sys import exit
 
-from numpy import ndarray, pi, sqrt
-from scipy.special import h1vp, hankel1
+from numpy import ndarray
+from scipy.special import h1vp, hankel1, spherical_jn, spherical_yn
 
 
 @dataclass(frozen=True)

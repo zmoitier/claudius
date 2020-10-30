@@ -103,12 +103,11 @@ def solve_prob(prob, M):
         if N == 0:
             if prob.inn_bdy.startswith("D"):
                 return Solution(
-                    *prob, expand_dims(-fj0(m, k * ρ[0]) / fun[0](m, ρ[0]), axis=1)
+                    *prob, expand_dims(-fj0(m, ρ[0]) / fun[0](m, ρ[0]), axis=1)
                 )
             else:
                 return Solution(
-                    *prob,
-                    expand_dims(-k * fj1(m, k * ρ[0]) / fun_der[0](m, ρ[0]), axis=1)
+                    *prob, expand_dims(-fj1(m, ρ[0]) / fun_der[0](m, ρ[0]), axis=1)
                 )
 
         else:
@@ -123,8 +122,6 @@ def solve_prob(prob, M):
                 A[:, 0, 1] = fun_der[0][1](m, ρ[0])
 
             A[:, 1:, :] = _calc_mat((M + 1, nbi - 1, nbi), m, ρ, εμ, fun, fun_der, 0)
-
-    print((A[0].real != 0) * 1)
 
     F = zeros((M + 1, size(A, 1)))
     F[:, -2] = fj0(m, ρ[-1])
