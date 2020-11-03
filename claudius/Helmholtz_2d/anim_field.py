@@ -17,7 +17,7 @@ def list_disk(ax, radii, inn_bdy):
 
     for ρ in radii[1:]:
         disks.append(
-            Circle((0, 0), radii[0], fill=False, ec="k", lw=2, ls="--", animated=True)
+            Circle((0, 0), ρ, fill=False, ec="k", lw=2, ls="--", animated=True)
         )
 
     return disks

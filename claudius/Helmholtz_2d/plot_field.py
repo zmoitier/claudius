@@ -43,7 +43,7 @@ def add_disk(ax, radii, inn_bdy):
         ax.add_artist(Circle((0, 0), radii[0], fc=(0.75, 0.75, 0.75), ec="k", lw=2))
 
     for ρ in radii[1:]:
-        ax.add_artist(Circle((0, 0), radii[0], fill=False, ec="k", lw=2, ls="--"))
+        ax.add_artist(Circle((0, 0), ρ, fill=False, ec="k", lw=2, ls="--"))
 
 
 def plot_field(prob, X, Y, U, type_field):
