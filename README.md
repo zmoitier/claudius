@@ -4,6 +4,12 @@ Python toolbox to compute scattering and total field when we have analytical com
 
 The word _claudius_ is an acronym for _CaLculs AnalytiqUes pour la DIffUSion des ondes_ the French translation of analytic computations for scattering or it can also be an acronym for _Computing anaLyticAlly and Uniquely Diverse fIeld Used in Scattering_.
 
+## Requirements
+
+- require: NumPy, SciPy
+- optional: Matplotlib
+- development: black, isort, pytest, pytest-cov
+
 ## 2D/3D Helmholtz
 
 ## 3D Maxwell

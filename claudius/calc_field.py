@@ -2,7 +2,12 @@ from sys import exit
 
 from numpy import array, isscalar
 
-from claudius import Helmholtz_2d, Helmholtz_3d, Maxwell_3d
+from claudius.Helmholtz_2d import sc_field as scf_H2d
+from claudius.Helmholtz_2d import tt_field as ttf_H2d
+from claudius.Helmholtz_3d import sc_field as scf_H3d
+from claudius.Helmholtz_3d import tt_field as ttf_H3d
+from claudius.Maxwell_3d import sc_field as scf_M3d
+from claudius.Maxwell_3d import tt_field as ttf_M3d
 
 
 def sc_field(sol, r, θ, φ=None):
@@ -14,19 +19,19 @@ def sc_field(sol, r, θ, φ=None):
         if φ is not None:
             exit("For dimension 2 the variable φ should be None.")
 
-        return Helmholtz_2d.sc_field(sol, R, Θ)
+        return scf_H2d(sol, R, Θ)
 
     if (sol.dim == 3) and (sol.pde.startswith("H")):
         if φ is None:
             exit("For dimension 3 the variable φ should not be None.")
 
-        return Helmholtz_3d.sc_field(sol, R, Θ, Φ)
+        return scf_H3d(sol, R, Θ, Φ)
 
     if (sol.dim == 3) and (sol.pde.startswith("M")):
         if φ is None:
             exit("For dimension 3 the variable φ should not be None.")
 
-        return Maxwell_3d.sc_field(sol, R, Θ, Φ)
+        return scf_M3d(sol, R, Θ, Φ)
 
 
 def tt_field(sol, r, θ, φ=None):
@@ -38,16 +43,16 @@ def tt_field(sol, r, θ, φ=None):
         if φ is not None:
             exit("For dimension 2 the variable φ should be None.")
 
-        return Helmholtz_2d.tt_field(sol, R, Θ)
+        return ttf_H2d(sol, R, Θ)
 
     if (sol.dim == 3) and (sol.pde.startswith("H")):
         if φ is None:
             exit("For dimension 3 the variable φ should not be None.")
 
-        return Helmholtz_3d.tt_field(sol, R, Θ, Φ)
+        return ttf_H3d(sol, R, Θ, Φ)
 
     if (sol.dim == 3) and (sol.pde.startswith("M")):
         if φ is None:
             exit("For dimension 3 the variable φ should not be None.")
 
-        return Maxwell_3d.tt_field(sol, R, Θ, Φ)
+        return ttf_M3d(sol, R, Θ, Φ)
