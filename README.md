@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4244731.svg)](https://doi.org/10.5281/zenodo.4244731)
+
 # claudius: Analytic computations for scattering
 
 Python toolbox to compute scattered and total field when we have analytical computation so typically when scatters are invariant by rotation and the incident field is a plane wave.

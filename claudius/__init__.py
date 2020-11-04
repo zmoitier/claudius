@@ -15,3 +15,4 @@ from .plot import plot_geometry, plot_potential
 from .solve_prob import solve_prob
 
 from .calc_field import sc_field, tt_field
+from .far_field import far_field

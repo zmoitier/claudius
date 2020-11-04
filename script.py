@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import claudius as acs
-from claudius.Helmholtz_2d import create_problem_cst, fun_cst, fun_cst_der
+from claudius.Helmholtz_2d import far_field, fun_cst, fun_cst_der, plot_far_field
 
 dim = 2
 pde = "H"
@@ -33,17 +33,7 @@ else:
 M = acs.trunc_H2d(k, 2)
 prob = acs.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
 
-sol = acs.solve_prob(prob, M)
+θ = np.linspace(0, 2 * np.pi, num=128)
+ff = far_field(prob, θ)
 
-nb = 64
-H = 2
-x = np.linspace(-H, H, num=nb)
-X, Y = np.meshgrid(x, x)
-R, Θ = np.hypot(X, Y), np.arctan2(Y, X)
-
-U = acs.sc_field(sol, R, Θ)
-
-plt.pcolormesh(X, Y, np.abs(U), shading="nearest")
-plt.colorbar()
-
-plt.show()
+plot_far_field(θ, ff)

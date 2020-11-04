@@ -1,13 +1,21 @@
-from numpy import cos, exp, ones_like, pi, sqrt
+from claudius.Helmholtz_2d import f_field as ff_H2d
 
 
-def sc_far_field(k, sol, θ):
-    if len(sol.coeff.shape) == 1:
-        β = sol.coeff
-    else:
-        β = sol.coeff[:, -1]
-    θπ2 = θ - pi / 2
-    ff = β[0] * ones_like(θ, dtype=complex)
-    for m, c in enumerate(β[1:], start=1):
-        ff += c * 2 * cos(m * θπ2)
-    return sqrt(2 / (pi * k)) * exp(-1j * pi / 4) * ff
+def far_field(sol, θ, φ=None):
+    if (sol.dim == 2) and (sol.pde.startswith("H")):
+        if φ is not None:
+            exit("For dimension 2 the variable φ should be None.")
+
+        return ff_H2d(sol, θ)
+
+    if (sol.dim == 3) and (sol.pde.startswith("H")):
+        if φ is None:
+            exit("For dimension 3 the variable φ should not be None.")
+
+        return None
+
+    if (sol.dim == 3) and (sol.pde.startswith("M")):
+        if φ is None:
+            exit("For dimension 3 the variable φ should not be None.")
+
+        return None
