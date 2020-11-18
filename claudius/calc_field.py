@@ -1,6 +1,6 @@
 from sys import exit
 
-from numpy import array, isscalar
+from numpy import asarray
 
 from claudius.Helmholtz_2d import sc_field as scf_H2d
 from claudius.Helmholtz_2d import tt_field as ttf_H2d
@@ -10,49 +10,43 @@ from claudius.Maxwell_3d import sc_field as scf_M3d
 from claudius.Maxwell_3d import tt_field as ttf_M3d
 
 
-def sc_field(sol, r, θ, φ=None):
-    R = r if not isscalar(r) else array([r])
-    Θ = θ if not isscalar(θ) else array([θ])
-    Φ = φ if not isscalar(φ) else array([φ])
+def sc_field(sol, coo_r, coo_t, coo_p=None):
+    R, Theta = asarray(coo_r), asarray(coo_t)
 
-    if (sol.dim == 2) and (sol.pde.startswith("H")):
-        if φ is not None:
-            exit("For dimension 2 the variable φ should be None.")
+    if sol.dim == 2:
+        if coo_p is not None:
+            exit("For dimension 2 the variable coo_p should be None.")
 
-        return scf_H2d(sol, R, Θ)
+        return scf_H2d(sol, R, Theta)
 
-    if (sol.dim == 3) and (sol.pde.startswith("H")):
-        if φ is None:
+    if sol.dim == 3:
+        if coo_p is None:
             exit("For dimension 3 the variable φ should not be None.")
+        Phi = asarray(coo_p)
 
-        return scf_H3d(sol, R, Θ, Φ)
+        if sol.pde.startswith("H"):
+            return scf_H3d(sol, R, Theta, Phi)
 
-    if (sol.dim == 3) and (sol.pde.startswith("M")):
-        if φ is None:
+        if sol.pde.startswith("M"):
+            return scf_M3d(sol, R, Theta, Phi)
+
+
+def tt_field(sol, coo_r, coo_t, coo_p=None):
+    R, Theta = asarray(coo_r), asarray(coo_t)
+
+    if sol.dim == 2:
+        if coo_p is not None:
+            exit("For dimension 2 the variable coo_p should be None.")
+
+        return ttf_H2d(sol, R, Theta)
+
+    if sol.dim == 3:
+        if coo_p is None:
             exit("For dimension 3 the variable φ should not be None.")
+        Phi = asarray(coo_p)
 
-        return scf_M3d(sol, R, Θ, Φ)
+        if sol.pde.startswith("H"):
+            return ttf_H3d(sol, R, Theta, Phi)
 
-
-def tt_field(sol, r, θ, φ=None):
-    R = r if not isscalar(r) else array([r])
-    Θ = θ if not isscalar(θ) else array([θ])
-    Φ = φ if not isscalar(φ) else array([φ])
-
-    if (sol.dim == 2) and (sol.pde.startswith("H")):
-        if φ is not None:
-            exit("For dimension 2 the variable φ should be None.")
-
-        return ttf_H2d(sol, R, Θ)
-
-    if (sol.dim == 3) and (sol.pde.startswith("H")):
-        if φ is None:
-            exit("For dimension 3 the variable φ should not be None.")
-
-        return ttf_H3d(sol, R, Θ, Φ)
-
-    if (sol.dim == 3) and (sol.pde.startswith("M")):
-        if φ is None:
-            exit("For dimension 3 the variable φ should not be None.")
-
-        return ttf_M3d(sol, R, Θ, Φ)
+        if sol.pde.startswith("M"):
+            return ttf_M3d(sol, R, Theta, Phi)

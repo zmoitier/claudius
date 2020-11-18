@@ -1,21 +1,30 @@
-from numpy import arange, expand_dims, size, zeros
+from numpy import arange, expand_dims, pi, size, sqrt, zeros
 from numpy.linalg import solve
 from scipy.special import jv, jvp, spherical_jn
 
 from claudius import Solution
 
 
-def _plane_wave(pde, d, k):
-    if pde.startswith("H"):
-        if d == 2:
-            return (lambda m, r: jv(m, k * r), lambda m, r: k * jvp(m, k * r))
-        else:
+def _plane_wave(dim, pde, k):
+    if dim == 2:
+        return (lambda m, r: jv(m, k * r), lambda m, r: k * jvp(m, k * r))
+
+    if dim == 3:
+        if pde.startswith("H"):
             return (
-                lambda l, r: spherical_jn(l, k * r),
-                lambda l, r: k * spherical_jn(l, k * r, derivative=True),
+                lambda l, r: 1j ** l
+                * sqrt((2 * l + 1) / (4 * pi))
+                * spherical_jn(l, k * r),
+                lambda l, r: k
+                * 1j ** l
+                * sqrt((2 * l + 1) / (4 * pi))
+                * spherical_jn(l, k * r, derivative=True),
             )
-    else:
-        pass
+
+        if pde.startswith("M"):
+            return None
+
+    return None
 
 
 def _calc_mat(shape, m, ρ, εμ, fun, fun_der, shift):
@@ -63,12 +72,12 @@ def _calc_mat(shape, m, ρ, εμ, fun, fun_der, shift):
 
 def solve_prob(prob, M):
     ρ = prob.radii
-    εμ = prob.εμ
-    k = prob.k
+    εμ = prob.eps_mu
+    k = prob.wavenum
     fun = prob.fun
     fun_der = prob.fun_der
 
-    fj0, fj1 = _plane_wave(prob.pde, prob.dim, k)
+    fj0, fj1 = _plane_wave(prob.dim, prob.pde, k)
 
     N = len(prob.radii) - 1  # Number of layers
     m = arange(M + 1)
@@ -123,7 +132,7 @@ def solve_prob(prob, M):
 
             A[:, 1:, :] = _calc_mat((M + 1, nbi - 1, nbi), m, ρ, εμ, fun, fun_der, 0)
 
-    F = zeros((M + 1, size(A, 1)))
+    F = zeros((M + 1, size(A, 1)), dtype=complex)
     F[:, -2] = fj0(m, ρ[-1])
     F[:, -1] = fj1(m, ρ[-1])
 

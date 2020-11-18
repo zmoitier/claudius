@@ -1,8 +1,6 @@
-from sys import exit
+from numpy import cos, exp, ones_like, pi, sin, sqrt, where, zeros_like
 
-from numpy import cos, ones_like, sin, where, zeros_like
-
-from claudius import incident_field
+from .plane_wave import incident_field
 
 
 def _partial_inner(α, C, R, Θ):
@@ -110,3 +108,14 @@ def tt_field(sol, R, Θ):
         ) + incident_field(sol.k, R[Out], Θ[Out], "rθ")
 
     return ut
+
+
+def f_field(sol, θ):
+    k = sol.k
+    β = sol.coeff[:, -1]
+    θπ2 = θ - pi / 2
+
+    ff = β[0] * ones_like(θ, dtype=complex)
+    for m, c in enumerate(β[1:], start=1):
+        ff += c * 2 * cos(m * θπ2)
+    return sqrt(2 / (pi * k)) * exp(-1j * pi / 4) * ff

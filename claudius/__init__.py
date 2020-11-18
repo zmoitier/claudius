@@ -1,5 +1,5 @@
 """isort:skip_file"""
-from .core import Problem, create_probem, Solution
+from .core import Problem, Solution, create_probem
 from .utils import (
     abs2,
     εμ_to_n,
@@ -7,9 +7,8 @@ from .utils import (
     trunc_H2d,
     trunc_H3d,
     trunc_None,
-    incident_field,
 )
-from .coords import to_polar
+from .coords import to_polar, to_spheric
 from .plot import plot_geometry, plot_potential
 
 from .solve_prob import solve_prob

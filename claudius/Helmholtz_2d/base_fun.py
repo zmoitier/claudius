@@ -3,9 +3,9 @@ from scipy.special import iv, ivp, jv, jvp, kv, kvp, yv, yvp
 from claudius import εμ_to_n, εμ_to_η
 
 
-def fun_cst(ε, μ, k):
-    if (ε * μ).real > 0:
-        nk = εμ_to_n(ε, μ) * k
+def fun_cst(eps, mu, wavenum):
+    if (eps * mu).real > 0:
+        nk = εμ_to_n(eps, mu) * wavenum
 
         def f(m, r):
             return jv(m, nk * r)
@@ -14,7 +14,7 @@ def fun_cst(ε, μ, k):
             return yv(m, nk * r)
 
     else:
-        ηk = εμ_to_η(ε, μ) * k
+        ηk = εμ_to_η(eps, mu) * wavenum
 
         def f(m, r):
             return iv(m, ηk * r)
@@ -25,9 +25,9 @@ def fun_cst(ε, μ, k):
     return (f, g)
 
 
-def fun_cst_der(ε, μ, k, p=1):
-    if (ε * μ).real > 0:
-        nk = εμ_to_n(ε, μ) * k
+def fun_cst_der(eps, mu, wavenum, p=1):
+    if (eps * mu).real > 0:
+        nk = εμ_to_n(eps, mu) * wavenum
         c = nk ** p
 
         def f(m, r):
@@ -37,7 +37,7 @@ def fun_cst_der(ε, μ, k, p=1):
             return c * yvp(m, nk * r, p)
 
     else:
-        ηk = εμ_to_η(ε, μ) * k
+        ηk = εμ_to_η(eps, mu) * wavenum
         c = ηk ** p
 
         def f(m, r):

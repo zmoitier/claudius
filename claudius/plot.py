@@ -6,7 +6,7 @@ def _calc_εμ(prob, penetrable, shift):
     vr, vε, vμ = [], [], []
 
     ρ = prob.radii
-    εμ = prob.εμ
+    εμ = prob.eps_mu
 
     if penetrable:
         r = linspace(ρ[0], 0, num=int(128 * ρ[0] / ρ[-1]), endpoint=False)
@@ -33,10 +33,7 @@ def plot_geometry(prob, T=None):
     if T is None:
         T = 1.5 * prob.radii[-1]
 
-    if penetrable:
-        shift = 1
-    else:
-        shift = 0
+    shift = 1 if penetrable else 0
 
     vr, vε, vμ, (εμmin, εμmax) = _calc_εμ(prob, penetrable, shift)
 
@@ -85,10 +82,7 @@ def plot_potential(prob, λ, Vlim=None, T=None):
     if T is None:
         T = 1.5 * prob.radii[-1]
 
-    if penetrable:
-        shift = 1
-    else:
-        shift = 0
+    shift = 1 if penetrable else 0
 
     vr, vε, vμ, (εμmin, εμmax) = _calc_εμ(prob, penetrable, shift)
     vV, vλ = [], []

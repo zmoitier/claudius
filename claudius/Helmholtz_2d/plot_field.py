@@ -1,11 +1,10 @@
 from matplotlib.collections import LineCollection
 from matplotlib.pyplot import Circle, show, subplots, suptitle, tight_layout
-from numpy import abs as np_abs
-from numpy import amax, angle, array, concatenate, imag, pi, real
+from numpy import absolute, amax, angle, array, concatenate, imag, pi, real
 
 
 def plot_real(fig, ax, X, Y, U_real):
-    U_max = amax(np_abs(U_real))
+    U_max = amax(absolute(U_real))
     p = ax.pcolormesh(
         X, Y, U_real, shading="gouraud", cmap="RdBu_r", vmin=-U_max, vmax=U_max
     )
@@ -14,7 +13,7 @@ def plot_real(fig, ax, X, Y, U_real):
 
 
 def plot_imag(fig, ax, X, Y, U_imag):
-    U_max = amax(np_abs(U_imag))
+    U_max = amax(absolute(U_imag))
     p = ax.pcolormesh(
         X, Y, U_imag, shading="gouraud", cmap="RdBu_r", vmin=-U_max, vmax=U_max
     )
@@ -52,24 +51,24 @@ def plot_field(prob, X, Y, U, type_field):
 
     plot_real(fig, ax[0, 0], X, Y, real(U))
     plot_imag(fig, ax[0, 1], X, Y, imag(U))
-    plot_abs(fig, ax[1, 0], X, Y, np_abs(U))
+    plot_abs(fig, ax[1, 0], X, Y, absolute(U))
     plot_arg(fig, ax[1, 1], X, Y, angle(U))
 
     for a in (ax[i, j] for i in range(2) for j in range(2)):
         add_disk(a, prob.radii, prob.inn_bdy)
 
-    suptitle(fr"{type_field} with $k = {prob.k}$")
+    suptitle(fr"{type_field} with $k = {prob.wavenum}$")
 
     tight_layout()
 
     show()
 
 
-def plot_far_field(θ, ff):
-    am = np_abs(ff)
+def plot_far_field(Theta, ff):
+    am = absolute(ff)
     ph = angle((ff[:-1] + ff[1:]) / 2)
 
-    points = array([θ, am]).T.reshape(-1, 1, 2)
+    points = array([Theta, am]).T.reshape(-1, 1, 2)
     segments = concatenate([points[:-2], points[1:-1], points[2:]], axis=1)
 
     fig, ax = subplots(subplot_kw={"polar": True})

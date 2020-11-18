@@ -1,22 +1,32 @@
 from sys import exit
 
-from numpy import arctan2, hypot, sqrt
+from numpy import arccos, arctan2, hypot, sqrt
 
 
-def to_polar(c1, c2, coord):
-    if coord == "xy":
-        return (hypot(c1, c2), arctan2(c2, c1))
-    elif coord == "rθ":
-        return (c1, c2)
-    else:
-        exit("coord = 'xy' for Cartesian or 'rθ' for Polar")
+def to_polar(coo_xr, coo_yt, type_coord):
+    if type_coord == "cartesian":
+        return (hypot(coo_xr, coo_yt), arctan2(coo_yt, coo_xr))
+
+    if type_coord == "polar":
+        return (coo_xr, coo_yt)
+
+    exit(
+        """Unsupported type_coord use either:
+    type_coord = "cartesian" for Cartesian coordinates
+    type_coord = "polar" for Polar coordinates"""
+    )
 
 
-def to_spheric(c1, c2, c3, coord):
-    if coord == "xyz":
-        r = sqrt(c1 ** 2 + c2 ** 2 + c3 ** 2)
-        return (r, arccos(c3 / r), arctan2(c2, c1))
-    elif coord == "rθϕ":
-        return (c1, c2, c3)
-    else:
-        exit("coord = 'xyz' for Cartesian or 'rθϕ' for Spheric")
+def to_spheric(coo_xr, coo_yt, coo_zp, type_coord):
+    if type_coord == "cartesian":
+        r = sqrt(coo_xr ** 2 + coo_yt ** 2 + coo_zp ** 2)
+        return (r, arccos(coo_zp / r), arctan2(coo_yt, coo_xr))
+
+    if type_coord == "spheric":
+        return (coo_xr, coo_yt, coo_zp)
+
+    exit(
+        """Unsupported type_coord use either:
+    type_coord = "cartesian" for Cartesian coordinates
+    type_coord = "spherical" for Spherical coordinates"""
+    )

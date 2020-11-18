@@ -32,4 +32,4 @@ git clone https://github.com/zmoitier/claudius.git
 
 ## Acknowledgment
 
-I would like to thank [Camille Carvalho](https://github.com/carvalhocamille) and Friedelinde for helping with the name.
+I would like to thank [Camille Carvalho](https://github.com/carvalhocamille) and Friedelinde for helping with the name and [Matthias Bussonnier](https://github.com/Carreau) for helping with PyPi.

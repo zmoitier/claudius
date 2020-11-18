@@ -14,10 +14,10 @@ prob = create_problem_cst("Neumann", (1,), (), k)
 N = 256
 X, Y = np.meshgrid(np.linspace(-T, T, num=N), np.linspace(-T, T, num=N))
 if len(argv) > 3:
-    U = scattered_field(prob, X, Y, "xy", T=np.sqrt(2) * T)
+    U = scattered_field(prob, X, Y, "cartesian", T=np.sqrt(2) * T)
     type_field = "Scattered field"
 else:
-    U = total_field(prob, X, Y, "xy", T=np.sqrt(2) * T)
+    U = total_field(prob, X, Y, "cartesian", T=np.sqrt(2) * T)
     type_field = "Total field"
 
 anim_field(prob, X, Y, U, type_field)

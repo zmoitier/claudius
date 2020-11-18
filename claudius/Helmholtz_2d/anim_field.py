@@ -1,7 +1,6 @@
 from matplotlib.animation import FuncAnimation
 from matplotlib.pyplot import Circle, show, subplots
-from numpy import abs as np_abs
-from numpy import amax, amin, exp, pi, real
+from numpy import absolute, amax, amin, exp, pi, real
 
 
 def list_disk(ax, radii, inn_bdy):
@@ -26,11 +25,11 @@ def list_disk(ax, radii, inn_bdy):
 def anim_field(prob, X, Y, U, type_field):
     fig, ax = subplots(subplot_kw={"aspect": "equal"})
 
-    ax.set_title(fr"{type_field} with $k = {prob.k}$")
+    ax.set_title(fr"{type_field} with $k = {prob.wavenum}$")
 
     disks = list_disk(ax, prob.radii, prob.inn_bdy)
 
-    U_max = amax(np_abs(U))
+    U_max = amax(absolute(U))
     im = ax.imshow(
         real(U),
         interpolation="none",
@@ -45,8 +44,8 @@ def anim_field(prob, X, Y, U, type_field):
     fig.colorbar(im, ax=ax)
 
     nbt = 110
-    dt = 2 * pi / (prob.k * nbt)
-    expi = exp(-1j * prob.k * dt)
+    dt = 2 * pi / (prob.wavenum * nbt)
+    expi = exp(-1j * prob.wavenum * dt)
 
     def init():
         return (im, *(ax.add_artist(disk) for disk in disks))

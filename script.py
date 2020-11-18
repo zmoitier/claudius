@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import claudius as acs
-from claudius.Helmholtz_2d import far_field, fun_cst, fun_cst_der, plot_far_field
+from claudius.Helmholtz_3d import fun_cst, fun_cst_der
 
-dim = 2
+dim = 3
 pde = "H"
-inn_bdy = "N"
+inn_bdy = "P"
 N = int(argv[1])
 k = 5
 
@@ -30,10 +30,10 @@ else:
     fun = tuple(fun_cst(1, 1, k) for n in range(N))
     fun_der = tuple(fun_cst_der(1, 1, k) for n in range(N))
 
-M = acs.trunc_H2d(k, 2)
 prob = acs.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
-
-θ = np.linspace(0, 2 * np.pi, num=128)
-ff = far_field(prob, θ)
-
-plot_far_field(θ, ff)
+M = acs.trunc_H3d(k, 2)
+sol = acs.solve_prob(prob, M)
+print(sol.coeff.shape)
+print(sol.coeff[:, 0])
+print(sol.coeff[:, 1])
+print(sol.coeff[:, 2])

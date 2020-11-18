@@ -1,13 +1,13 @@
 from context import claudius as acs
-from numpy import linspace, ones_like, zeros_like
+from numpy import arange, linspace, ones_like, pi, size, sqrt, zeros_like
 from numpy.random import uniform
 from numpy.testing import assert_allclose
 
-from claudius.Helmholtz_2d import fun_cst, fun_cst_der
+from claudius.Helmholtz_3d import fun_cst, fun_cst_der
 
 
 def _define_prob(inn_bdy, k, N):
-    dim = 2
+    dim = 3
     pde = "Helmholtz"
 
     if N == 0:
@@ -30,7 +30,7 @@ def _define_prob(inn_bdy, k, N):
 def _coeff_sol(inn_bdy, k, N_list):
     pb_list = [_define_prob(inn_bdy, k, N) for N in N_list]
 
-    M = acs.trunc_H2d(k, 3)
+    M = acs.trunc_H3d(k, 3)
 
     sol_list = [acs.solve_prob(pb, M) for pb in pb_list]
 
@@ -43,8 +43,11 @@ class TestImpenetrable:
         for k in vk:
             c0, c1 = _coeff_sol("Dirichlet", k, [0, 1])
 
+            l = arange(size(c0, 0))
+            cl = 1j ** l * sqrt((2 * l + 1) / (4 * pi))
+
             assert assert_allclose(c1[:, 2], c0[:, 0], rtol=1e-6) is None
-            assert assert_allclose(c1[:, 0], 1 + c0[:, 0], rtol=1e-6) is None
+            assert assert_allclose(c1[:, 0], cl + c0[:, 0], rtol=1e-6) is None
             assert assert_allclose(c1[:, 1], 1j * c0[:, 0], rtol=1e-6) is None
 
     def test_neumann(self):
@@ -52,8 +55,11 @@ class TestImpenetrable:
         for k in vk:
             c0, c1 = _coeff_sol("Neumann", k, [0, 1])
 
+            l = arange(size(c0, 0))
+            cl = 1j ** l * sqrt((2 * l + 1) / (4 * pi))
+
             assert assert_allclose(c1[:, 2], c0[:, 0], rtol=1e-6) is None
-            assert assert_allclose(c1[:, 0], 1 + c0[:, 0], rtol=1e-6) is None
+            assert assert_allclose(c1[:, 0], cl + c0[:, 0], rtol=1e-6) is None
             assert assert_allclose(c1[:, 1], 1j * c0[:, 0], rtol=1e-6) is None
 
 
@@ -63,7 +69,10 @@ class TestPenetrable:
         for k in vk:
             (c,) = _coeff_sol("Penetrable", k, [0])
 
-            assert assert_allclose(c[:, 0], ones_like(c[:, 0]), rtol=1e-6) is None
+            l = arange(size(c, 0))
+            cl = 1j ** l * sqrt((2 * l + 1) / (4 * pi))
+
+            assert assert_allclose(c[:, 0], cl, rtol=1e-6) is None
             assert assert_allclose(c[:, 1], zeros_like(c[:, 1]), atol=1e-15) is None
 
     def test_penetrable_1(self):
@@ -71,7 +80,10 @@ class TestPenetrable:
         for k in vk:
             (c,) = _coeff_sol("Penetrable", k, [1])
 
-            assert assert_allclose(c[:, 0], ones_like(c[:, 0]), rtol=1e-6) is None
-            assert assert_allclose(c[:, 1], ones_like(c[:, 1]), rtol=1e-6) is None
+            l = arange(size(c, 0))
+            cl = 1j ** l * sqrt((2 * l + 1) / (4 * pi))
+
+            assert assert_allclose(c[:, 0], cl, rtol=1e-6) is None
+            assert assert_allclose(c[:, 1], cl, rtol=1e-6) is None
             assert assert_allclose(c[:, 2], zeros_like(c[:, 2]), atol=1e-15) is None
             assert assert_allclose(c[:, 3], zeros_like(c[:, 3]), atol=1e-15) is None

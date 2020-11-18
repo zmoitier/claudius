@@ -1,21 +1,24 @@
+from numpy import asarray
+
 from claudius.Helmholtz_2d import f_field as ff_H2d
 
 
-def far_field(sol, θ, φ=None):
-    if (sol.dim == 2) and (sol.pde.startswith("H")):
-        if φ is not None:
-            exit("For dimension 2 the variable φ should be None.")
+def far_field(sol, coo_t, coo_p=None):
+    Theta = asarray(coo_t)
 
-        return ff_H2d(sol, θ)
+    if sol.dim == 2:
+        if coo_p is not None:
+            exit("For dimension 2 the variable coo_p should be None.")
 
-    if (sol.dim == 3) and (sol.pde.startswith("H")):
-        if φ is None:
+        return ff_H2d(sol, Theta)
+
+    if sol.dim == 3:
+        if coo_p is None:
             exit("For dimension 3 the variable φ should not be None.")
+        Phi = asarray(coo_p)
 
-        return None
+        if sol.pde.startswith("H"):
+            return None
 
-    if (sol.dim == 3) and (sol.pde.startswith("M")):
-        if φ is None:
-            exit("For dimension 3 the variable φ should not be None.")
-
-        return None
+        if sol.pde.startswith("M"):
+            return None
