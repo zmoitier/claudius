@@ -6,11 +6,23 @@ build-backend = "flit_core.buildapi"
 module = "claudius"
 author = "Zoïs Moitier"
 author-email = "z.moitier@gmail.com"
-home-page = "https://pypi.org/project/claudius/"
-classifiers = ["License :: OSI Approved :: MIT License"]
+home-page = "https://github.com/zmoitier/claudius"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+description = "Analytic computations for scattering"
 description-file = "README.md"
-requires-python = '>=3.7'
+requires-python = ">=3.7"
 requires = [
-    "numba", "numpy", "matplotlib", "scipy"
+    "numba", "numpy", "scipy"
 ]
 
+[tool.flit.metadata.requires-extra]
+plot = ["matplotlib"]
+dev = [
+    "black", "isort", "pytest", "pytest-cov"
+]
