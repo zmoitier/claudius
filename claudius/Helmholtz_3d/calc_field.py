@@ -1,5 +1,6 @@
 from numpy import cos, exp, ones_like, pi, sin, sqrt, where, zeros_like
 from scipy.special import sph_harm
+
 from .plane_wave import incident_field
 
 

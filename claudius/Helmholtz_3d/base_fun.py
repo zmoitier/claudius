@@ -1,4 +1,5 @@
-from scipy.special import spherical_in, spherical_jn, spherical_kn, spherical_yn
+from scipy.special import (spherical_in, spherical_jn, spherical_kn,
+                           spherical_yn)
 
 from claudius import εμ_to_n, εμ_to_η
 
