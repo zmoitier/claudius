@@ -13,11 +13,11 @@ def _plane_wave(dim, pde, k):
         if pde.startswith("H"):
             return (
                 lambda l, r: 1j ** l
-                * sqrt((2 * l + 1) / (4 * pi))
+                * sqrt(4 * pi * (2 * l + 1))
                 * spherical_jn(l, k * r),
                 lambda l, r: k
                 * 1j ** l
-                * sqrt((2 * l + 1) / (4 * pi))
+                * sqrt(4 * pi * (2 * l + 1))
                 * spherical_jn(l, k * r, derivative=True),
             )
 

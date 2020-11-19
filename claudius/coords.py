@@ -22,7 +22,7 @@ def to_spheric(coo_xr, coo_yt, coo_zp, type_coord):
         r = sqrt(coo_xr ** 2 + coo_yt ** 2 + coo_zp ** 2)
         return (r, arctan2(coo_yt, coo_xr), arccos(coo_zp / r))
 
-    if type_coord == "spheric":
+    if type_coord == "spherical":
         return (coo_xr, coo_yt, coo_zp)
 
     exit(

@@ -27,7 +27,7 @@ def trunc_H2d(k, T):
 
 def trunc_H3d(k, T):
     l = arange(ceil(16 + k * T))
-    I = where(absolute(sqrt((2 * l + 1) / (4 * pi)) * spherical_jn(l, k * T)) > 1e-6)
+    I = where(absolute(sqrt(4 * pi * (2 * l + 1)) * spherical_jn(l, k * T)) > 1e-6)
     return I[0][-1]
 
 

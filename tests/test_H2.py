@@ -1,77 +1,89 @@
-from context import claudius as acs
-from numpy import linspace, ones_like, zeros_like
+from context import claudius
+from numpy import linspace, meshgrid, ones_like, pi, zeros_like
 from numpy.random import uniform
 from numpy.testing import assert_allclose
 
-from claudius.Helmholtz_2d import fun_cst, fun_cst_der
+from claudius.Helmholtz_2d import create_problem_cst
 
 
-def _define_prob(inn_bdy, k, N):
-    dim = 2
-    pde = "Helmholtz"
+def _sol(inn_bdy, radii_list, εμ_list, k):
+    pb_list = [
+        create_problem_cst(inn_bdy, radii, εμ, k)
+        for radii, εμ in zip(radii_list, εμ_list)
+    ]
 
-    if N == 0:
-        radii = (1,)
-    else:
-        radii = tuple(linspace(1, 2, num=N + 1))
+    M = claudius.trunc_H2d(k, 3)
 
-    if inn_bdy.startswith("P"):
-        εμc = tuple((ones_like, ones_like) for n in range(N + 1))
-        fun = (fun_cst(1, 1, k)[0], *(fun_cst(1, 1, k) for n in range(N)))
-        fun_der = (fun_cst_der(1, 1, k)[0], *(fun_cst_der(1, 1, k) for n in range(N)))
-    else:
-        εμc = tuple((ones_like, ones_like) for n in range(N))
-        fun = tuple(fun_cst(1, 1, k) for n in range(N))
-        fun_der = tuple(fun_cst_der(1, 1, k) for n in range(N))
-
-    return acs.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
-
-
-def _coeff_sol(inn_bdy, k, N_list):
-    pb_list = [_define_prob(inn_bdy, k, N) for N in N_list]
-
-    M = acs.trunc_H2d(k, 3)
-
-    sol_list = [acs.solve_prob(pb, M) for pb in pb_list]
-
-    return tuple(sol.coeff for sol in sol_list)
+    return [claudius.solve_prob(pb, M) for pb in pb_list]
 
 
 class TestImpenetrable:
     def test_dirichlet(self):
-        vk = uniform(0.5, 2, 8)
-        for k in vk:
-            c0, c1 = _coeff_sol("Dirichlet", k, [0, 1])
+        for k in uniform(0.5, 2, 8):
+            sol0, sol1 = _sol("Dirichlet", [(1,), (1, 2)], [(), ((1, 1),)], k)
+            c0, c1 = sol0.coeff, sol1.coeff
 
             assert assert_allclose(c1[:, 2], c0[:, 0], rtol=1e-6) is None
             assert assert_allclose(c1[:, 0], 1 + c0[:, 0], rtol=1e-6) is None
             assert assert_allclose(c1[:, 1], 1j * c0[:, 0], rtol=1e-6) is None
+
+            r, t = linspace(1, 3, num=16), linspace(0, 2 * pi, num=16, endpoint=False)
+            R, T = meshgrid(r, t)
+            us0, ut0 = claudius.sc_field(sol0, R, T), claudius.tt_field(sol0, R, T)
+            us1, ut1 = claudius.sc_field(sol1, R, T), claudius.tt_field(sol0, R, T)
+
+            assert assert_allclose(us0, us1, atol=1e-6) is None
+            assert assert_allclose(ut0, ut1, atol=1e-6) is None
 
     def test_neumann(self):
-        vk = uniform(0.5, 2, 8)
-        for k in vk:
-            c0, c1 = _coeff_sol("Neumann", k, [0, 1])
+        for k in uniform(0.5, 2, 8):
+            sol0, sol1 = _sol("Neumann", [(1,), (1, 2)], [(), ((1, 1),)], k)
+            c0, c1 = sol0.coeff, sol1.coeff
 
             assert assert_allclose(c1[:, 2], c0[:, 0], rtol=1e-6) is None
             assert assert_allclose(c1[:, 0], 1 + c0[:, 0], rtol=1e-6) is None
             assert assert_allclose(c1[:, 1], 1j * c0[:, 0], rtol=1e-6) is None
+
+            r, t = linspace(1, 3, num=16), linspace(0, 2 * pi, num=16, endpoint=False)
+            R, T = meshgrid(r, t)
+            us0, ut0 = claudius.sc_field(sol0, R, T), claudius.tt_field(sol0, R, T)
+            us1, ut1 = claudius.sc_field(sol1, R, T), claudius.tt_field(sol0, R, T)
+
+            assert assert_allclose(us0, us1, atol=1e-6) is None
+            assert assert_allclose(ut0, ut1, atol=1e-6) is None
 
 
 class TestPenetrable:
-    def test_penetrable_0(self):
-        vk = uniform(0.5, 2, 8)
-        for k in vk:
-            (c,) = _coeff_sol("Penetrable", k, [0])
+    def test_penetrable_coeff(self):
+        for k in uniform(0.5, 2, 8):
+            sol0, sol1 = _sol(
+                "Penetrable", [(1,), (1, 2)], [((1, 1),), ((1, 1), (1, 1))], k
+            )
+            c0, c1 = sol0.coeff, sol1.coeff
 
-            assert assert_allclose(c[:, 0], ones_like(c[:, 0]), rtol=1e-6) is None
-            assert assert_allclose(c[:, 1], zeros_like(c[:, 1]), atol=1e-15) is None
+            assert assert_allclose(c0[:, 0], ones_like(c0[:, 0]), rtol=1e-6) is None
+            assert assert_allclose(c0[:, 1], zeros_like(c0[:, 1]), atol=1e-15) is None
 
-    def test_penetrable_1(self):
-        vk = uniform(0.5, 2, 8)
-        for k in vk:
-            (c,) = _coeff_sol("Penetrable", k, [1])
+            assert assert_allclose(c1[:, 0], ones_like(c1[:, 0]), rtol=1e-6) is None
+            assert assert_allclose(c1[:, 1], ones_like(c1[:, 1]), rtol=1e-6) is None
+            assert assert_allclose(c1[:, 2], zeros_like(c1[:, 2]), atol=1e-15) is None
+            assert assert_allclose(c1[:, 3], zeros_like(c1[:, 3]), atol=1e-15) is None
 
-            assert assert_allclose(c[:, 0], ones_like(c[:, 0]), rtol=1e-6) is None
-            assert assert_allclose(c[:, 1], ones_like(c[:, 1]), rtol=1e-6) is None
-            assert assert_allclose(c[:, 2], zeros_like(c[:, 2]), atol=1e-15) is None
-            assert assert_allclose(c[:, 3], zeros_like(c[:, 3]), atol=1e-15) is None
+    def test_penetrable_field(self):
+        for k in uniform(0.5, 2, 8):
+            sol0, sol1 = _sol(
+                "Penetrable", [(1,), (1, 2)], [((1, 1),), ((1, 1), (1, 1))], k
+            )
+            c0, c1 = sol0.coeff, sol1.coeff
+
+            r, t = linspace(0.5, 3, num=16), linspace(0, 2 * pi, num=16, endpoint=False)
+            R, T = meshgrid(r, t)
+            us0, ut0 = claudius.sc_field(sol0, R, T), claudius.tt_field(sol0, R, T)
+            us1, ut1 = claudius.sc_field(sol1, R, T), claudius.tt_field(sol1, R, T)
+            ui = claudius.Helmholtz_2d.incident_field(k, R, T, "polar")
+
+            assert assert_allclose(ui + us0, ut0, rtol=1e-6) is None
+            assert assert_allclose(ui + us1, ut1, rtol=1e-6) is None
+
+            assert assert_allclose(us0, us1, atol=1e-6) is None
+            assert assert_allclose(ut0, ut1, atol=1e-6) is None

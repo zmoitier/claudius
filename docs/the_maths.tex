@@ -476,12 +476,12 @@ where $(x, y)$ are the Cartesian coordinates and $(r, \theta)$ the corresponding
 
 For a 3d plane wave of direction $\vect{\nu} \in \bbS^2$ and wavenumber $k > 0$, we have the following expansion
 \[
-    \ex^{\im\, k\, \vect{\nu} \cdot \vx} = 4\pi \sum_{\ell = 0}^{+\infty} \im^\ell\, \bj_\ell(k\, r) \sum_{m = -\ell}^\ell Y_\ell^m(\vect{\nu}) \overline{Y_\ell^m(\omega)}
+    \ex^{\im\, k\, \vect{\nu} \cdot \vx} = 4\pi \sum_{\ell = 0}^{+\infty} \im^\ell\, \bj_\ell(k\, r) \sum_{m = -\ell}^\ell \overline{Y_\ell^m(\vect{\nu})} Y_\ell^m(\omega)
 \]
 where $(x, y)$ are the Cartesian coordinates and $(r, \theta)$ the corresponding polar coordinates.
 For the particular direction $\vect{\nu} = (0, 0, 1)^\intercal$ we obtain
 \begin{equation}\label{eq:wave_expan_3}
-    \ex^{\im\, k\, z} = \sum_{\ell = 0}^{+\infty} \im^\ell \,\sqrt{\frac{2\ell+1}{4\pi}}\, \bj_\ell(k\, r)\, Y_\ell^0(\omega).
+    \ex^{\im\, k\, z} = \sum_{\ell = 0}^{+\infty} \im^\ell \,\sqrt{4\pi(2\ell+1)}\, \bj_\ell(k\, r)\, Y_\ell^0(\omega).
 \end{equation}
 
 \bibliographystyle{alpha}

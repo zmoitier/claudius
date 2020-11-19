@@ -1,13 +1,12 @@
-import math as ma
 from sys import argv
 
 import matplotlib.pyplot as plt
 import numpy as np
+from context import claudius
 
-import claudius as acs
 from claudius.Helmholtz_3d import fun_cst, fun_cst_der
 
-dim = 3
+dim = 2
 pde = "H"
 inn_bdy = "P"
 N = int(argv[1])
@@ -27,10 +26,23 @@ else:
     fun = tuple(fun_cst(1, 1, k) for n in range(N))
     fun_der = tuple(fun_cst_der(1, 1, k) for n in range(N))
 
-prob = acs.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
-print(prob.eps_mu)
+prob = claudius.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
+M = claudius.trunc_H3d(k, 2)
+sol = claudius.solve_prob(prob, M)
 
-M = acs.trunc_H3d(k, 2)
+x = np.linspace(-2, 2, num=64)
+z = np.linspace(-2, 2, num=64)
+X, Z = np.meshgrid(x, z)
+R, T, P = claudius.to_spheric(X, np.array([0]), Z, "cartesian")
 
-sol = acs.solve_prob(prob, M)
-print(sol)
+U = claudius.tt_field(sol, R, T)
+plt.imshow(np.abs(U), extent=(-2, 2, -2, 2))
+
+t = np.linspace(0, 2 * np.pi, num=64)
+co, si = np.cos(t), np.sin(t)
+for ρ in radii:
+    plt.plot(ρ * co, ρ * si, "k")
+
+plt.colorbar()
+
+plt.show()
