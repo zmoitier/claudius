@@ -9,7 +9,6 @@ from .utils import (
     trunc_None,
 )
 from .coords import to_polar, to_spheric
-from .plot import plot_geometry, plot_potential
 
 from .solve_prob import solve_prob
 

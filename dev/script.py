@@ -1,3 +1,4 @@
+import math as ma
 from sys import argv
 
 import matplotlib.pyplot as plt
@@ -18,22 +19,18 @@ else:
     radii = tuple(np.linspace(1, 1.5, num=N + 1))
 
 if inn_bdy.startswith("P"):
-    εμc = tuple(
-        (lambda r: np.ones_like(r), lambda r: np.ones_like(r)) for n in range(N + 1)
-    )
+    εμc = tuple((1, 1) for n in range(N + 1))
     fun = (fun_cst(1, 1, k)[0], *(fun_cst(1, 1, k) for n in range(N)))
     fun_der = (fun_cst_der(1, 1, k)[0], *(fun_cst_der(1, 1, k) for n in range(N)))
 else:
-    εμc = tuple(
-        (lambda r: np.ones_like(r), lambda r: np.ones_like(r)) for n in range(N)
-    )
+    εμc = tuple((1, 1) for n in range(N))
     fun = tuple(fun_cst(1, 1, k) for n in range(N))
     fun_der = tuple(fun_cst_der(1, 1, k) for n in range(N))
 
 prob = acs.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
+print(prob.eps_mu)
+
 M = acs.trunc_H3d(k, 2)
+
 sol = acs.solve_prob(prob, M)
-print(sol.coeff.shape)
-print(sol.coeff[:, 0])
-print(sol.coeff[:, 1])
-print(sol.coeff[:, 2])
+print(sol)

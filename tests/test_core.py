@@ -6,7 +6,7 @@ def _create_Helmholtz_2d(dim, pde, inn_bdy):
     radii = (1,)
     k = 1
     if inn_bdy.startswith("P"):
-        εμc = ((),)
+        εμc = ((1, 1),)
         func = ((),)
         func_der = ((),)
     else:

@@ -20,7 +20,7 @@ def to_polar(coo_xr, coo_yt, type_coord):
 def to_spheric(coo_xr, coo_yt, coo_zp, type_coord):
     if type_coord == "cartesian":
         r = sqrt(coo_xr ** 2 + coo_yt ** 2 + coo_zp ** 2)
-        return (r, arccos(coo_zp / r), arctan2(coo_yt, coo_xr))
+        return (r, arctan2(coo_yt, coo_xr), arccos(coo_zp / r))
 
     if type_coord == "spheric":
         return (coo_xr, coo_yt, coo_zp)

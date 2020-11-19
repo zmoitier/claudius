@@ -7,10 +7,7 @@ from .base_fun import fun_cst, fun_cst_der
 
 def create_problem_cst(inn_bdy, radii, eps_mu_cst, wavenum):
     k = wavenum
-    εμc = tuple(
-        (lambda r: ε * ones_like(r), lambda r: μ * ones_like(r))
-        for (ε, μ) in eps_mu_cst
-    )
+    εμc = tuple((ε, μ) for (ε, μ) in eps_mu_cst)
 
     if inn_bdy.startswith("P"):
         fun = (
