@@ -1,5 +1,6 @@
 from context import claudius
-from numpy import arange, linspace, meshgrid, ones_like, pi, size, sqrt, zeros_like
+from numpy import (arange, linspace, meshgrid, ones_like, pi, size, sqrt,
+                   zeros_like)
 from numpy.random import uniform
 from numpy.testing import assert_allclose
 

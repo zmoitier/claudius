@@ -14,7 +14,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
-description = "Analytic computations for scattering"
 description-file = "README.md"
 requires-python = ">=3.7"
 requires = [
