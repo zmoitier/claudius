@@ -1,4 +1,7 @@
-"""isort:skip_file"""
+""" Analytic computations for scattering
+
+    isort:skip_file
+"""
 from .core import Problem, Solution, create_probem
 from .utils import (
     abs2,
