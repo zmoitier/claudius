@@ -1,4 +1,4 @@
-[![PyPI version](https://badge.fury.io/py/claudius.svg)](https://badge.fury.io/py/claudius) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4281267.svg)](https://doi.org/10.5281/zenodo.4281267) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![PyPI version](https://badge.fury.io/py/claudius.svg)](https://badge.fury.io/py/claudius) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4244730.svg)](https://doi.org/10.5281/zenodo.4244730) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
 # claudius: Analytic computations for scattering
 
