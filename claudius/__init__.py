@@ -18,4 +18,4 @@ from .solve_prob import solve_prob
 from .calc_field import sc_field, tt_field
 from .far_field import far_field
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"

@@ -26,7 +26,9 @@ python3 -m pip install --user claudius
 git clone https://github.com/zmoitier/claudius.git
 ```
 
-## Short description
+## Long description
+
+- to do
 
 ### 2D/3D Helmholtz
 
