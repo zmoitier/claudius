@@ -1,8 +1,9 @@
+"""Solve the problem"""
 from numpy import arange, expand_dims, pi, size, sqrt, zeros
 from numpy.linalg import solve
 from scipy.special import jv, jvp, spherical_jn
 
-from claudius import Solution
+from .core import Solution
 
 
 def _plane_wave(dim, pde, k):
@@ -22,7 +23,7 @@ def _plane_wave(dim, pde, k):
             )
 
         if pde.startswith("M"):
-            return None
+            raise ValueError("Not implemented yet")
 
     return None
 
@@ -71,6 +72,27 @@ def _calc_mat(shape, m, ρ, εμ, fun, fun_der, shift):
 
 
 def solve_prob(prob, M):
+    """
+    sol = solve_prob(prob, M)
+
+    Comptute the coefficients of the series solution.
+
+    Parameters
+    ----------
+    prob : Problem
+        Problem dataclass
+    M : integer
+        Truncature of the series
+
+    Returns
+    -------
+    sol : Solution
+        Solution dataclass
+    """
+
+    if M < 0:
+        raise ValueError(f"The integer {M} should be non-negative.")
+
     ρ = prob.radii
     εμ = prob.eps_mu
     k = prob.wavenum
@@ -114,23 +136,22 @@ def solve_prob(prob, M):
                 return Solution(
                     *prob, expand_dims(-fj0(m, ρ[0]) / fun[0](m, ρ[0]), axis=1)
                 )
-            else:
-                return Solution(
-                    *prob, expand_dims(-fj1(m, ρ[0]) / fun_der[0](m, ρ[0]), axis=1)
-                )
 
+            return Solution(
+                *prob, expand_dims(-fj1(m, ρ[0]) / fun_der[0](m, ρ[0]), axis=1)
+            )
+
+        nbi = 2 * len(ρ) - 1
+        A = zeros((M + 1, nbi, nbi), dtype=complex)
+
+        if prob.inn_bdy.startswith("D"):
+            A[:, 0, 0] = fun[0][0](m, ρ[0])
+            A[:, 0, 1] = fun[0][1](m, ρ[0])
         else:
-            nbi = 2 * len(ρ) - 1
-            A = zeros((M + 1, nbi, nbi), dtype=complex)
+            A[:, 0, 0] = fun_der[0][0](m, ρ[0])
+            A[:, 0, 1] = fun_der[0][1](m, ρ[0])
 
-            if prob.inn_bdy.startswith("D"):
-                A[:, 0, 0] = fun[0][0](m, ρ[0])
-                A[:, 0, 1] = fun[0][1](m, ρ[0])
-            else:
-                A[:, 0, 0] = fun_der[0][0](m, ρ[0])
-                A[:, 0, 1] = fun_der[0][1](m, ρ[0])
-
-            A[:, 1:, :] = _calc_mat((M + 1, nbi - 1, nbi), m, ρ, εμ, fun, fun_der, 0)
+        A[:, 1:, :] = _calc_mat((M + 1, nbi - 1, nbi), m, ρ, εμ, fun, fun_der, 0)
 
     F = zeros((M + 1, size(A, 1)), dtype=complex)
     F[:, -2] = fj0(m, ρ[-1])

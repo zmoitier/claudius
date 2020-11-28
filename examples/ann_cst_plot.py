@@ -3,8 +3,8 @@ from sys import argv
 import numpy as np
 from context import claudius
 
-from claudius.Helmholtz_2d import (create_problem_cst, plot_field,
-                                   scattered_field, total_field)
+from claudius.Helmholtz_2d import (create_problem_cst, plot_field, scattered_field,
+                                   total_field)
 
 δ = float(argv[1])
 εc = float(argv[2])

@@ -15,14 +15,12 @@ N = 128
 C1, C2 = np.meshgrid(np.linspace(-T, T, num=N), np.linspace(-T, T, num=N))
 
 if dim == 2:
-    from claudius.Helmholtz_2d import (create_problem_cst, scattered_field,
-                                       total_field)
+    from claudius.Helmholtz_2d import create_problem_cst, scattered_field, total_field
 
     coord = (C1, C2)
 
 if dim == 3:
-    from claudius.Helmholtz_3d import (create_problem_cst, scattered_field,
-                                       total_field)
+    from claudius.Helmholtz_3d import create_problem_cst, scattered_field, total_field
 
     plan = argv[6]
     if plan == "XY":

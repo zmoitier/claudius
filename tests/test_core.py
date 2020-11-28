@@ -1,5 +1,6 @@
-from context import claudius as acs
 from numpy import array
+
+import claudius as acs
 
 
 def _create_Helmholtz_2d(dim, pde, inn_bdy):

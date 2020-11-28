@@ -1,5 +1,5 @@
+"""Core class"""
 from dataclasses import astuple, dataclass
-from sys import exit
 
 from numpy import isscalar, ndarray, ndim, ones_like
 from scipy.special import h1vp, hankel1, spherical_jn, spherical_yn
@@ -7,14 +7,37 @@ from scipy.special import h1vp, hankel1, spherical_jn, spherical_yn
 
 @dataclass(frozen=True)
 class Problem:
-    dim: int  # Dimension of the problem: 2 or 3
-    pde: str  # Which PDE to use: Helmholtz or Maxwell
-    inn_bdy: str  # Inner boundary: P, D, or N
-    radii: tuple  # Radii of the layers
-    eps_mu: tuple  # Functions giving ε and μ
-    wavenum: float  # Wavenumber of the incident wave
-    fun: tuple  # Functions that solve the ODE
-    fun_der: tuple  # Derivative of fun
+    """
+    Dataclass to describe the Problem
+
+    Attributes
+    ----------
+    dim : integer
+        Dimension of the problem: 2 or 3
+    pde : string
+        Which PDE to use: Helmholtz or Maxwell
+    inn_bdy : string
+        Which inner boundary: Penetrable, Dirichlet, or Neumann
+    radii : tuple
+        Radii of the layers
+    eps_mu : tuple
+        ε and μ of the layers
+    wavenum : float
+        Wavenumber of the incident wave
+    fun : tuple
+        Functions that solve the ODE
+    fun_der : tuple
+        Derivative of fun
+    """
+
+    dim: int
+    pde: str
+    inn_bdy: str
+    radii: tuple
+    eps_mu: tuple
+    wavenum: float
+    fun: tuple
+    fun_der: tuple
 
     def __iter__(self):
         return iter(astuple(self))
@@ -22,47 +45,52 @@ class Problem:
 
 @dataclass(frozen=True)
 class Solution(Problem):
-    coeff: ndarray  # Coefficients of the series
+    """
+    Dataclass to describe the solution that is an inheritance from Problem
+
+    Attributes
+    ----------
+    coeff : ndarray
+        Coefficients of the series solution
+    """
+
+    coeff: ndarray
 
 
-def check_dim(dim):
+def _check_dim(dim):
     if dim not in (2, 3):
-        exit(
-            """Unsupported inn_bdy, the choices are:
-    dim = 2 or dim = 3."""
-        )
+        raise ValueError(f"Dimension {dim} unsupported, the choices are: 2 or 3.")
 
 
-def check_pde(pde):
+def _check_pde(pde):
     if not (pde.startswith("H") or pde.startswith("M")):
-        exit(
-            """Unsupported pde, the choices are:
-    pde = "Helmholtz" or pde = "Maxwell"."""
+        raise ValueError(
+            f"PDE {pde} unsupported, the choise are: 'Helmholtz' or 'Maxwell'."
         )
 
 
-def check_inn_bdy(inn_bdy):
+def _check_inn_bdy(inn_bdy):
     if not (
         inn_bdy.startswith("D") or inn_bdy.startswith("N") or inn_bdy.startswith("P")
     ):
-        exit(
-            """Unsupported inn_bdy, the choices are:
-    inn_bdy = "D" for Dirichlet condition on the inner radii,
-    inn_bdy = "N" for Neumann condition on the inner radii,
-    inn_bdy = "P" for a penetrable obstacle."""
+        raise ValueError(
+            f"Inner boundary {inn_bdy} unsupported, the choise are:\n"
+            "    'Dirichlet' for Dirichlet condition on the inner radii,\n"
+            "    'Neumann' for Neumann condition on the inner radii,\n"
+            "    'Penetrable' for a penetrable obstacle."
         )
 
 
-def check_layer(nb_layer, nb_εμ, nb_func, nb_func_der):
+def _check_layer(nb_layer, nb_εμ, nb_func, nb_func_der):
     if nb_εμ is not nb_layer:
-        exit(f"""len(eps_mu) = {nb_εμ} instead of {nb_layer}""")
+        raise ValueError(f"len(eps_mu) = {nb_εμ} instead of {nb_layer}")
     if nb_func is not nb_layer:
-        exit(f"""len(fun) = {nb_func} instead of {nb_layer}""")
+        raise ValueError(f"len(fun) = {nb_func} instead of {nb_layer}")
     if nb_func_der is not nb_layer:
-        exit(f"""len(fun) = {nb_func_der} instead of {nb_layer}""")
+        raise ValueError(f"len(fun) = {nb_func_der} instead of {nb_layer}")
 
 
-def to_fct(num_or_fct, a, b):
+def _to_fct(num_or_fct, a, b):
     if isscalar(num_or_fct):
         return lambda r: num_or_fct * ones_like(r)
 
@@ -70,17 +98,17 @@ def to_fct(num_or_fct, a, b):
     if (ndim(value_left) == 0) and (ndim(value_right) == 0):
         return num_or_fct
 
-    exit("eps_mu should be numbres of function that return numbres.")
+    raise ValueError("eps_mu should be numbers of function that return numbers.")
 
 
-def make_fct(eps_mu, radii):
+def _make_fct(eps_mu, radii):
     return tuple(
-        (to_fct(ε, a, b), to_fct(μ, a, b))
+        (_to_fct(ε, a, b), _to_fct(μ, a, b))
         for (ε, μ), a, b in zip(eps_mu, radii[:-1], radii[1:])
     )
 
 
-def add_hankel(dim, pde, k, func, func_der):
+def _add_hankel(dim, pde, k, func, func_der):
     if dim == 2:
         fun = (*func, lambda m, r: hankel1(m, k * r))
         fun_der = (*func_der, lambda m, r: k * h1vp(m, k * r))
@@ -101,23 +129,53 @@ def add_hankel(dim, pde, k, func, func_der):
             )
 
         if pde.startswith("M"):
-            exit("Not done yet")
+            raise ValueError("Not implemented yet")
 
     return (fun, fun_der)
 
 
 def create_probem(dim, pde, inn_bdy, radii, eps_mu, wavenum, func, func_der):
-    check_dim(dim)
-    check_pde(pde)
-    check_inn_bdy(inn_bdy)
+    """
+    prob = create_probem(dim, pde, inn_bdy, radii, eps_mu, wavenum, func, func_der)
+
+    Create the Problem dataclass from arguments.
+
+    Parameters
+    ----------
+    dim : integer
+        Dimension of the problem: 2 or 3
+    pde : string
+        Which PDE to use: Helmholtz or Maxwell
+    inn_bdy : string
+        Which inner boundary: Penetrable, Dirichlet, or Neumann
+    radii : tuple
+        Radii of the layers
+    eps_mu : tuple
+        ε and μ of the layers
+    wavenum : float
+        Wavenumber of the incident wave
+    fun : tuple
+        Functions that solve the ODE
+    fun_der : tuple
+        Derivative of fun
+
+    Returns
+    -------
+    prob : Problem
+        Problem dataclass created from arguments.
+    """
+
+    _check_dim(dim)
+    _check_pde(pde)
+    _check_inn_bdy(inn_bdy)
 
     if inn_bdy.startswith("P"):
-        check_layer(len(radii), len(eps_mu), len(func), len(func_der))
-        εμ = make_fct(eps_mu, (0, *radii))
+        _check_layer(len(radii), len(eps_mu), len(func), len(func_der))
+        εμ = _make_fct(eps_mu, (0, *radii))
     else:
-        check_layer(len(radii) - 1, len(eps_mu), len(func), len(func_der))
-        εμ = make_fct(eps_mu, radii)
+        _check_layer(len(radii) - 1, len(eps_mu), len(func), len(func_der))
+        εμ = _make_fct(eps_mu, radii)
 
-    fun, fun_der = add_hankel(dim, pde, wavenum, func, func_der)
+    fun, fun_der = _add_hankel(dim, pde, wavenum, func, func_der)
 
     return Problem(dim, pde, inn_bdy, radii, εμ, wavenum, fun, fun_der)

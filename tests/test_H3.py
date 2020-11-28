@@ -1,9 +1,8 @@
-from context import claudius
-from numpy import (arange, linspace, meshgrid, ones_like, pi, size, sqrt,
-                   zeros_like)
+from numpy import arange, linspace, meshgrid, pi, size, sqrt, zeros_like
 from numpy.random import uniform
 from numpy.testing import assert_allclose
 
+import claudius
 from claudius.Helmholtz_3d import create_problem_cst
 
 
@@ -30,9 +29,9 @@ class TestImpenetrable:
 
             cl = coeff_serie(arange(size(c0, 0)))
 
-            assert assert_allclose(c1[:, 2], c0[:, 0], rtol=1e-6) is None
-            assert assert_allclose(c1[:, 0], cl + c0[:, 0], rtol=1e-6) is None
-            assert assert_allclose(c1[:, 1], 1j * c0[:, 0], rtol=1e-6) is None
+            assert assert_allclose(c1[:, 2], c0[:, 0], rtol=5e-6) is None
+            assert assert_allclose(c1[:, 0], cl + c0[:, 0], rtol=5e-6) is None
+            assert assert_allclose(c1[:, 1], 1j * c0[:, 0], rtol=5e-6) is None
 
             r, t, p = (
                 linspace(1, 3, num=8),
@@ -47,8 +46,8 @@ class TestImpenetrable:
                 sol0, R, T, P
             )
 
-            assert assert_allclose(us0, us1, atol=1e-6) is None
-            assert assert_allclose(ut0, ut1, atol=1e-6) is None
+            assert assert_allclose(us0, us1, atol=5e-6) is None
+            assert assert_allclose(ut0, ut1, atol=5e-6) is None
 
     def test_neumann(self):
         for k in uniform(0.5, 2, 8):
@@ -57,9 +56,9 @@ class TestImpenetrable:
 
             cl = coeff_serie(arange(size(c0, 0)))
 
-            assert assert_allclose(c1[:, 2], c0[:, 0], rtol=1e-6) is None
-            assert assert_allclose(c1[:, 0], cl + c0[:, 0], rtol=1e-6) is None
-            assert assert_allclose(c1[:, 1], 1j * c0[:, 0], rtol=1e-6) is None
+            assert assert_allclose(c1[:, 2], c0[:, 0], rtol=5e-6) is None
+            assert assert_allclose(c1[:, 0], cl + c0[:, 0], rtol=5e-6) is None
+            assert assert_allclose(c1[:, 1], 1j * c0[:, 0], rtol=5e-6) is None
 
             r, t, p = (
                 linspace(1, 3, num=8),
@@ -74,8 +73,8 @@ class TestImpenetrable:
                 sol0, R, T, P
             )
 
-            assert assert_allclose(us0, us1, rtol=1e-6) is None
-            assert assert_allclose(ut0, ut1, rtol=1e-6) is None
+            assert assert_allclose(us0, us1, rtol=5e-6) is None
+            assert assert_allclose(ut0, ut1, rtol=5e-6) is None
 
 
 class TestPenetrable:
@@ -88,13 +87,13 @@ class TestPenetrable:
 
             cl = coeff_serie(arange(size(c0, 0)))
 
-            assert assert_allclose(c0[:, 0], cl, rtol=1e-6) is None
-            assert assert_allclose(c0[:, 1], zeros_like(c0[:, 1]), atol=1e-15) is None
+            assert assert_allclose(c0[:, 0], cl, rtol=5e-6) is None
+            assert assert_allclose(c0[:, 1], zeros_like(c0[:, 1]), atol=2e-15) is None
 
-            assert assert_allclose(c1[:, 0], cl, rtol=1e-6) is None
-            assert assert_allclose(c1[:, 1], cl, rtol=1e-6) is None
-            assert assert_allclose(c1[:, 2], zeros_like(c1[:, 2]), atol=1e-15) is None
-            assert assert_allclose(c1[:, 3], zeros_like(c1[:, 3]), atol=1e-15) is None
+            assert assert_allclose(c1[:, 0], cl, rtol=5e-6) is None
+            assert assert_allclose(c1[:, 1], cl, rtol=5e-6) is None
+            assert assert_allclose(c1[:, 2], zeros_like(c1[:, 2]), atol=2e-15) is None
+            assert assert_allclose(c1[:, 3], zeros_like(c1[:, 3]), atol=2e-15) is None
 
     def test_penetrable_field(self):
         for k in uniform(0.5, 2, 8):
@@ -117,8 +116,8 @@ class TestPenetrable:
             )
             ui = claudius.Helmholtz_3d.incident_field(k, R, T, P, "spherical")
 
-            assert assert_allclose(ui + us0, ut0, rtol=1e-6) is None
-            assert assert_allclose(ui + us1, ut1, rtol=1e-6) is None
+            assert assert_allclose(ui + us0, ut0, rtol=5e-6) is None
+            assert assert_allclose(ui + us1, ut1, rtol=5e-6) is None
 
-            assert assert_allclose(us0, us1, atol=1e-6) is None
-            assert assert_allclose(ut0, ut1, atol=1e-6) is None
+            assert assert_allclose(us0, us1, atol=5e-6) is None
+            assert assert_allclose(ut0, ut1, atol=5e-6) is None
