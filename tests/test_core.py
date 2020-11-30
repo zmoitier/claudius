@@ -1,6 +1,6 @@
 from numpy import array
 
-import claudius as acs
+import claudius
 
 
 def _create_Helmholtz_2d(dim, pde, inn_bdy):
@@ -15,8 +15,8 @@ def _create_Helmholtz_2d(dim, pde, inn_bdy):
         func = ()
         func_der = ()
 
-    prob = acs.create_probem(dim, pde, inn_bdy, radii, εμc, k, func, func_der)
-    return acs.Solution(*prob, array([]))
+    prob = claudius.create_probem(dim, pde, inn_bdy, radii, εμc, k, func, func_der)
+    return claudius.Solution(*prob, array([]))
 
 
 class TestHelmholtz_2d:

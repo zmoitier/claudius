@@ -1,6 +1,6 @@
 from scipy.special import spherical_in, spherical_jn, spherical_kn, spherical_yn
 
-from claudius import εμ_to_n, εμ_to_η
+from ..utils import εμ_to_n, εμ_to_η
 
 
 def fun_cst(eps, mu, wavenum):

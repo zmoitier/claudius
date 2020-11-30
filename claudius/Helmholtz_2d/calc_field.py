@@ -1,6 +1,10 @@
+"""Compute the field"""
 from numpy import cos, exp, ones_like, pi, sin, sqrt, where, zeros_like
 
-from .plane_wave import incident_field
+
+def incident_field(wavenum, coo_r, coo_t):
+    """Compute 2d plane wave"""
+    return exp(1j * wavenum * coo_r * sin(coo_t))
 
 
 def _partial_inner(α, C, R, Theta):
@@ -42,7 +46,7 @@ def _partial_outer(β, H, R, Theta):
     return u
 
 
-def sc_field(sol, R, Theta):
+def scattered_field(sol, R, Theta):
     ρ = sol.radii
     N = len(ρ) - 1
     Inn = where(R < ρ[0])
@@ -54,7 +58,7 @@ def sc_field(sol, R, Theta):
     if sol.inn_bdy.startswith("P") and (len(Inn[0]) != 0):
         us[Inn] = _partial_inner(
             sol.coeff[:, 0], sol.fun[0], R[Inn], Theta[Inn]
-        ) - incident_field(sol.wavenum, R[Inn], Theta[Inn], "polar")
+        ) - incident_field(sol.wavenum, R[Inn], Theta[Inn])
 
     shift = 1 if sol.inn_bdy.startswith("P") else 0
     for i, J in enumerate(Lay):
@@ -68,7 +72,7 @@ def sc_field(sol, R, Theta):
                     R[J],
                     Theta[J],
                 )
-                - incident_field(sol.wavenum, R[J], Theta[J], "polar")
+                - incident_field(sol.wavenum, R[J], Theta[J])
             )
 
     if len(Out[0]) != 0:
@@ -77,7 +81,7 @@ def sc_field(sol, R, Theta):
     return us
 
 
-def tt_field(sol, R, Theta):
+def total_field(sol, R, Theta):
     ρ = sol.radii
     N = len(ρ) - 1
     Inn = where(R < ρ[0])
@@ -104,12 +108,12 @@ def tt_field(sol, R, Theta):
     if len(Out[0]) != 0:
         ut[Out] = _partial_outer(
             sol.coeff[:, -1], sol.fun[-1], R[Out], Theta[Out]
-        ) + incident_field(sol.wavenum, R[Out], Theta[Out], "polar")
+        ) + incident_field(sol.wavenum, R[Out], Theta[Out])
 
     return ut
 
 
-def f_field(sol, Theta):
+def far_field(sol, Theta):
     k = sol.wavenum
     β = sol.coeff[:, -1]
     θπ2 = Theta - pi / 2

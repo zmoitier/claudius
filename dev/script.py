@@ -6,7 +6,7 @@ import numpy as np
 import claudius
 from claudius.Helmholtz_3d import fun_cst, fun_cst_der
 
-dim = 2
+dim = 3
 pde = "H"
 inn_bdy = "P"
 N = int(argv[1])
@@ -27,5 +27,4 @@ else:
     fun_der = tuple(fun_cst_der(1, 1, k) for n in range(N))
 
 prob = claudius.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
-M = claudius.trunc_H3d(k, 2)
-sol = claudius.solve_prob(prob, M)
+sol = claudius.solve_prob(prob, T=2)

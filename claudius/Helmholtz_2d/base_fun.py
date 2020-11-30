@@ -1,6 +1,7 @@
+"""Base functions for constant coefficients"""
 from scipy.special import iv, ivp, jv, jvp, kv, kvp, yv, yvp
 
-from claudius import εμ_to_n, εμ_to_η
+from ..utils import εμ_to_n, εμ_to_η
 
 
 def fun_cst(eps, mu, wavenum):

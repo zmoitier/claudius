@@ -1,9 +1,25 @@
 """Solve the problem"""
-from numpy import arange, expand_dims, pi, size, sqrt, zeros
+from math import ceil
+
+from numpy import absolute, arange, expand_dims, pi, size, sqrt, where, zeros
 from numpy.linalg import solve
 from scipy.special import jv, jvp, spherical_jn
 
 from .core import Solution
+
+
+def _choose_trunc(dim, pde, x):
+    if dim == 2:
+        m = arange(ceil(16 + x))
+        I = where(absolute(jv(m, x)) > 1e-6)
+        return I[0][-1] + 1
+
+    if pde.startswith("H"):
+        l = arange(ceil(16.5 + x))
+        I = where(absolute(sqrt(4 * pi * (2 * l + 1)) * spherical_jn(l, x)) > 1e-6)
+        return I[0][-1] + 1
+
+    raise ValueError("not done yet")
 
 
 def _plane_wave(dim, pde, k):
@@ -71,9 +87,9 @@ def _calc_mat(shape, m, ρ, εμ, fun, fun_der, shift):
     return A
 
 
-def solve_prob(prob, M):
+def solve_prob(prob, M=None, T=None):
     """
-    sol = solve_prob(prob, M)
+    sol = solve_prob(prob, M=None, T=None)
 
     Comptute the coefficients of the series solution.
 
@@ -81,8 +97,10 @@ def solve_prob(prob, M):
     ----------
     prob : Problem
         Problem dataclass
-    M : integer
+    M : integer (optional)
         Truncature of the series
+    T : float (optional)
+        Radius maximum
 
     Returns
     -------
@@ -90,8 +108,16 @@ def solve_prob(prob, M):
         Solution dataclass
     """
 
-    if M < 0:
-        raise ValueError(f"The integer {M} should be non-negative.")
+    M_is_None, T_is_None = M is None, T is None
+    if (M_is_None and T_is_None) or ((not M_is_None) and (not T_is_None)):
+        raise ValueError("You need to specify M or T but not both.")
+
+    if T is not None:
+        M = _choose_trunc(prob.dim, prob.pde, prob.wavenum * T)
+
+    if M is not None:
+        if M < 0:
+            raise ValueError(f"The integer {M} should be non-negative.")
 
     ρ = prob.radii
     εμ = prob.eps_mu

@@ -1,7 +1,4 @@
-from numpy import ones_like
-
-from claudius import create_probem
-
+from ..core import create_probem
 from .base_fun import fun_cst, fun_cst_der
 
 

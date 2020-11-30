@@ -1,7 +1,4 @@
-"""isort:skip_file"""
+"""3d Helmholtz"""
 from .base_fun import fun_cst, fun_cst_der
-from .plane_wave import incident_field
-from .calc_field import sc_field, tt_field
-
+from .calc_field import far_field, incident_field, scattered_field, total_field
 from .prob_cst import create_problem_cst
-from .utils import scattered_field, total_field, far_field

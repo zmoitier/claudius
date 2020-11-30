@@ -1,7 +1,10 @@
-from numpy import cos, exp, ones_like, pi, sin, sqrt, where, zeros_like
+from numpy import cos, exp, ones_like, where, zeros_like
 from scipy.special import sph_harm
 
-from .plane_wave import incident_field
+
+def incident_field(wavenum, coo_r, coo_t, coo_p):
+    """Compute the plane wave incident field"""
+    return exp(1j * wavenum * coo_r * cos(coo_p)) * ones_like(coo_t)
 
 
 def _partial_inner(α, C, R, Theta, Phi):
@@ -25,7 +28,7 @@ def _partial_outer(β, H, R, Theta, Phi):
     return u
 
 
-def sc_field(sol, R, Theta, Phi):
+def scattered_field(sol, R, Theta, Phi):
     ρ = sol.radii
     N = len(ρ) - 1
     Inn = where(R < ρ[0])
@@ -37,7 +40,7 @@ def sc_field(sol, R, Theta, Phi):
     if sol.inn_bdy.startswith("P") and (len(Inn[0]) != 0):
         us[Inn] = _partial_inner(
             sol.coeff[:, 0], sol.fun[0], R[Inn], Theta[Inn], Phi[Inn]
-        ) - incident_field(sol.wavenum, R[Inn], Theta[Inn], Phi[Inn], "spherical")
+        ) - incident_field(sol.wavenum, R[Inn], Theta[Inn], Phi[Inn])
 
     shift = 1 if sol.inn_bdy.startswith("P") else 0
     for i, J in enumerate(Lay):
@@ -52,7 +55,7 @@ def sc_field(sol, R, Theta, Phi):
                     Theta[J],
                     Phi[J],
                 )
-                - incident_field(sol.wavenum, R[J], Theta[J], Phi[J], "spherical")
+                - incident_field(sol.wavenum, R[J], Theta[J], Phi[J])
             )
 
     if len(Out[0]) != 0:
@@ -63,7 +66,7 @@ def sc_field(sol, R, Theta, Phi):
     return us
 
 
-def tt_field(sol, R, Theta, Phi):
+def total_field(sol, R, Theta, Phi):
     ρ = sol.radii
     N = len(ρ) - 1
     Inn = where(R < ρ[0])
@@ -93,12 +96,12 @@ def tt_field(sol, R, Theta, Phi):
     if len(Out[0]) != 0:
         ut[Out] = _partial_outer(
             sol.coeff[:, -1], sol.fun[-1], R[Out], Theta[Out], Phi[Out]
-        ) + incident_field(sol.wavenum, R[Out], Theta[Out], Phi[Out], "spherical")
+        ) + incident_field(sol.wavenum, R[Out], Theta[Out], Phi[Out])
 
     return ut
 
 
-def f_field(sol, Theta, Phi):
+def far_field(sol, Theta, Phi):
     k = sol.wavenum
     β = sol.coeff[:, -1]
 

@@ -3,7 +3,8 @@ from numpy.random import uniform
 from numpy.testing import assert_allclose
 
 import claudius
-from claudius.Helmholtz_2d import create_problem_cst
+from claudius.Helmholtz_2d import (create_problem_cst, incident_field, scattered_field,
+                                   total_field)
 
 
 def _sol(inn_bdy, radii_list, εμ_list, k):
@@ -12,9 +13,7 @@ def _sol(inn_bdy, radii_list, εμ_list, k):
         for radii, εμ in zip(radii_list, εμ_list)
     ]
 
-    M = claudius.trunc_H2d(k, 3)
-
-    return [claudius.solve_prob(pb, M) for pb in pb_list]
+    return [claudius.solve_prob(pb, T=3) for pb in pb_list]
 
 
 class TestImpenetrable:
@@ -29,8 +28,8 @@ class TestImpenetrable:
 
             r, t = linspace(1, 3, num=16), linspace(0, 2 * pi, num=16, endpoint=False)
             R, T = meshgrid(r, t)
-            us0, ut0 = claudius.sc_field(sol0, R, T), claudius.tt_field(sol0, R, T)
-            us1, ut1 = claudius.sc_field(sol1, R, T), claudius.tt_field(sol0, R, T)
+            us0, ut0 = scattered_field(sol0, R, T), total_field(sol0, R, T)
+            us1, ut1 = scattered_field(sol1, R, T), total_field(sol0, R, T)
 
             assert assert_allclose(us0, us1, atol=5e-6) is None
             assert assert_allclose(ut0, ut1, atol=5e-6) is None
@@ -46,8 +45,8 @@ class TestImpenetrable:
 
             r, t = linspace(1, 3, num=16), linspace(0, 2 * pi, num=16, endpoint=False)
             R, T = meshgrid(r, t)
-            us0, ut0 = claudius.sc_field(sol0, R, T), claudius.tt_field(sol0, R, T)
-            us1, ut1 = claudius.sc_field(sol1, R, T), claudius.tt_field(sol0, R, T)
+            us0, ut0 = scattered_field(sol0, R, T), total_field(sol0, R, T)
+            us1, ut1 = scattered_field(sol1, R, T), total_field(sol0, R, T)
 
             assert assert_allclose(us0, us1, atol=5e-6) is None
             assert assert_allclose(ut0, ut1, atol=5e-6) is None
@@ -77,9 +76,9 @@ class TestPenetrable:
 
             r, t = linspace(0.5, 3, num=16), linspace(0, 2 * pi, num=16, endpoint=False)
             R, T = meshgrid(r, t)
-            us0, ut0 = claudius.sc_field(sol0, R, T), claudius.tt_field(sol0, R, T)
-            us1, ut1 = claudius.sc_field(sol1, R, T), claudius.tt_field(sol1, R, T)
-            ui = claudius.Helmholtz_2d.incident_field(k, R, T, "polar")
+            us0, ut0 = scattered_field(sol0, R, T), total_field(sol0, R, T)
+            us1, ut1 = scattered_field(sol1, R, T), total_field(sol1, R, T)
+            ui = incident_field(k, R, T)
 
             assert assert_allclose(ui + us0, ut0, rtol=5e-6) is None
             assert assert_allclose(ui + us1, ut1, rtol=5e-6) is None

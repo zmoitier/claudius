@@ -3,7 +3,7 @@
 % arara: bibtex
 % arara: pdflatex: {draft: yes, shell : yes}
 % arara: pdflatex: {shell : yes}
-% arara: clean: { extensions: [ log ], files: [ indent ] }
+% arara: clean: { files: [ indent.log ] }
 % arara: clean: { extensions: [ aux, bak, bbl, blg, log, toc, out ]}
 
 \documentclass[12pt,a4paper]{article}
@@ -15,6 +15,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage[margin=2cm]{geometry}
+\usepackage{enumitem}
+\setlist[itemize,1]{label=$\blacktriangleright$}
 
 % Maths ---------------------------------------------------
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
@@ -143,7 +145,7 @@
 
 
 % Titre ===================================================
-\title{claudius: analytic computations of scattering \\ \Large \emph{calculs analytiques pour la diffusion}}
+\title{claudius: analytic computations for scattering \\ \Large \emph{calculs analytiques pour la diffusion des ondes}}
 \author{Zoïs \textsc{Moitier}}
 
 %==========================================================
@@ -209,7 +211,12 @@ In the following, the scattered field is noted $u^\sca$ and the total field is n
 \subsection{The scattering problem}
 %----------------------------------
 
-We consider three type of problems, if the cavity has a penetrable core, if the cavity has an impenetrable core with homogeneous Dirichlet condition, and if the cavity has an impenetrable core with homogeneous Neumann condition.
+We consider three type of problems: a cavity
+\begin{itemize}
+    \item with a penetrable core;
+    \item with an impenetrable core and an homogeneous Dirichlet condition on the inner radius;
+    \item with an impenetrable core and an homogeneous Neumann condition on the inner radius.
+\end{itemize}
 The domain of the operator $u \mapsto -\mu^{-1}\Div(\eps^{-1}\, \nabla u)$ of domain depend on the type of problem:
 \begin{align*}
     D^\calD & \coloneqq \{u \in \rmL^2(\bbR^d \setminus \bbB_{\rho_1}) \mid \Div(\eps^{-1}\, \nabla u) \in \rmL^2(\bbR^d \setminus \bbB_{\rho_1}) \text{ and } \restr{u}{\rho_1\bbS^{d-1}} = 0\}, \\
@@ -255,7 +262,7 @@ in the penetrable case, where $\vect{n} : \Gamma \to \bbS^{d-1}$ are the outward
     \end{align}
 \end{subequations}
 with $(r, \theta) \in \bbR_+ \times \bbR / 2\pi\bbZ$ the polar coordinate,
-$(r, \theta, \phi) \in \bbR_+ \times [0, \pi] \times \bbR / 2\pi\bbZ$ the spherical coordinate, $Y_\ell^m$ the spherical harmonic, and $z \mapsto \Hu_m(z)$ (resp.\ $z \mapsto \hu_m(z)$) is the cylindrical (resp.\ spherical) Hankel function of the first kind of order $m$.
+$(r, \theta, \phi) \in \bbR_+ \times \bbR / 2\pi\bbZ \times [0, \pi]$ the spherical coordinate, $Y_\ell^m$ the spherical harmonic, and $z \mapsto \Hu_m(z)$ (resp.\ $z \mapsto \hu_m(z)$) is the cylindrical (resp.\ spherical) Hankel function of the first kind of order $m$.
 
 %----------------------------
 \subsection{The 1d reduction}
@@ -265,12 +272,12 @@ We look for solution of problem of the form
 \begin{align*}
     u(\vx)
      & = \sum_{m \in \bbZ} w_m(r)\, \ex^{\im\, m\, \theta}
-     &                                                                                     & \text{where } w_m(r) \coloneqq \frac{1}{2\pi} \int_0^{2\pi} u(r,\theta)\, \ex^{-\im\, m\, \theta} \di{\theta}
-     &                                                                                     & d = 2                                                                                                         \\
+     &                                                                                           & \text{where } w_m(r) \coloneqq \frac{1}{2\pi} \int_0^{2\pi} u(r,\theta)\, \ex^{-\im\, m\, \theta} \di{\theta}
+     &                                                                                           & d = 2                                                                                                                   \\
     u(\vx)
-     & = \sum_{\ell = 0}^{+\infty} \sum_{m = -\ell}^\ell w_{\ell, m}(r)\, Y_\ell^m(\omega)
-     &                                                                                     & \text{where } w_{\ell, m}(r) \coloneqq \int_{\bbS^2} u(r, \omega)\, \overline{Y_\ell^m(\omega)} \di{\omega}
-     &                                                                                     & d = 3
+     & = \sum_{\ell = 0}^{+\infty} \sum_{m = -\ell}^\ell w_{\ell, m}(r)\, Y_\ell^m(\theta, \phi)
+     &                                                                                           & \text{where } w_{\ell, m}(r) \coloneqq \int_{\bbS^2} u(r, \theta, \phi)\, \overline{Y_\ell^m(\theta, \phi)} \di{\omega}
+     &                                                                                           & d = 3
 \end{align*}
 with $(r, \theta) \in \bbR_+ \times \bbR / 2\pi\bbZ$ the polar coordinate,
 $(r, \theta, \phi) \in \bbR_+ \times [0, \pi] \times \bbR / 2\pi\bbZ$ the spherical coordinate.
@@ -279,11 +286,11 @@ Using \cref{eq:wave_expan_2,eq:wave_expan_3}, we deduce that, in dimension $2$, 
 To treat dimension $2$ and $3$ in a unified manner, we set $w_p^\inc(r) = c_p\frj_p(k\, r)$ and $\widehat{p}_d \in \bbR_+$ where
 \[
     \begin{array}{l@{\quad}l@{\quad}l@{\quad}l@{\qquad}l}
-        p = m \in \bbZ,    & \frj_p = \bJ_m,    & c_p = 1,                                      & \widehat{p}_d = p^2,    & \text{for } d = 2; \\
-        p = \ell \in \bbZ, & \frj_p = \bj_\ell, & c_p = \im^\ell\, \sqrt{\frac{2\ell+1}{4\pi}}, & \widehat{p}_d = p(p+1), & \text{for } d = 3.
+        p = m \in \bbZ,    & \frj_p = \bJ_m,    & c_p = 1,                                & \widehat{p}_d = p^2,    & \text{for } d = 2; \\
+        p = \ell \in \bbN, & \frj_p = \bj_\ell, & c_p = \im^\ell\, \sqrt{4\pi (2\ell+1)}, & \widehat{p}_d = p(p+1), & \text{for } d = 3.
     \end{array}
 \]
-So \cref{eq:scat_pde_im,eq:scat_pde,eq:OWC} reduce a family of problem index by $p$: Given $k > 0$ find $w_p^\sca \in D^{\calD_p/\calN_p/\calP_p}_\loc$ such that $w_p = w_p^\inc + w_p^\sca$ and
+So \cref{eq:scat_pde_im,eq:scat_pde,eq:OWC} reduce to a family of problem index by $p$: Given $k > 0$ find $w_p^\sca \in D^{\calD_p/\calN_p/\calP_p}_\loc$ such that $w_p = w_p^\inc + w_p^\sca$ and
 \begin{equation}
     (\calD_p/\calN_p) : \begin{dcases}
         -\frac{\mu^{-1}}{r^{d-1}} \partial_r\plr{\frac{r^{d-1}}{\eps}\, \partial_r w_p} + \dfrac{\widehat{p}_d}{r^2\, \eps\mu} w_p - k^2\, w_p = 0 & \text{in } \bigcup_{n=1}^N (\rho_n, \rho_{n+1}) \text{ and } (\rho_{N+1}, +\infty) \\
@@ -312,7 +319,7 @@ with $A_p w =  \partial_r(\eps^{-1}\, r^{d-1} \partial_r w) - \widehat{p}_d\, r^
     D^{\calN_p} & \coloneqq \{w \in \rmL^2((\rho_1, +\infty), r^{d-1}\di{r}) \mid A_p w \in \rmL^2((\rho_1, +\infty))\},                            \\
     D^{\calP_p} & \coloneqq \{w \in \rmL^2(\bbR_+^*, r^{d-1}\di{r}) \mid A_p w  \in \rmL^2(\bbR_+^*)\}.
 \end{align*}
-In each layers $n$ or the core we assume that we have a solution basis of the ordinary differential equation
+In each layers $n$ or in the core we assume that we have a solution basis of the ordinary differential equation
 \[
     -\frac{1}{r^{d-1}\, \mu_n} \partial_r\plr{\frac{r^{d-1}}{\eps_n}\, \partial_r w_p} + \dfrac{\widehat{p}_d}{r^2\, \eps_n\, \mu_n} w_p - k^2 w_p = 0
 \]
@@ -345,21 +352,73 @@ We write the solution $w_p$ has
     w_p(r) = \begin{dcases}
         \alpha_{0, p}\, f_{0, p}(r)                              & \text{if } 0 \le r \le \rho_1                                     \\
         \alpha_{n, p}\, f_{n, p}(r) + \beta_{n, p}\, g_{n, p}(r) & \text{if } 1 \le n \le N \text{ and } \rho_n \le r \le \rho_{n+1} \\
-        \beta_{N+1, p}\frh_p(k\, r)                              & \text{if } r \ge \rho_{N+1}
+        \beta_{N+1, p}\frh_p(k\, r)     + c_p\frj_p(k\, r)       & \text{if } r \ge \rho_{N+1}
     \end{dcases}
 \end{equation}
-and use the transmission conditions to compute the coefficients $\alpha_{0, p}$, $\alpha_{1, p}, \beta_{1, p}, \ldots, \alpha_{N, p}, \beta_{N, p}$, and $\beta_{N+1, p}$.
-For the Dirichlet case, the coefficient are solution of $M_{N, p}^\calD X_{N, p} = J_{N, p}$ where $M_{N, p}^\calD \in \calM_{2N+1}(\bbC)$ and
+The first coefficient $\alpha_{0, p}$ is not use in the impenetrable cases.
+To compute the coefficient $\alpha_{0, p}$, $\alpha_{1, p}, \beta_{1, p}, \ldots, \alpha_{N, p}, \beta_{N, p}$, and $\beta_{N+1, p}$, we use the transmission conditions at the interfaces.
+For $n \in \{1, \ldots, N\}$, they give $T_{n-1, p}(\rho_n)(\alpha_{n-1, p}, \beta_{n-1, p})^\intercal = T_{n, p}(\rho_n) (\alpha_{n, p}, \beta_{n, p})^\intercal$ where
+\begin{equation}
+    T_{0, p}(\rho) = \begin{pmatrix}
+        f_{0, p}(\rho) \\[2ex]
+        \dfrac{f_{0, p}'(\rho)}{\eps_n(\rho)}
+    \end{pmatrix} \in \calM_{2, 1}(\bbC) \quad
+    \text{and} \quad
+    T_{n, p}(\rho) = \begin{pmatrix}
+        f_{n, p}(\rho)                        & g_{n, p}(\rho)                        \\[2ex]
+        \dfrac{f_{n, p}'(\rho)}{\eps_n(\rho)} & \dfrac{g_{n, p}'(\rho)}{\eps_n(\rho)}
+    \end{pmatrix} \in \calM_{2, 2}(\bbC)
+\end{equation}
+and the last interface $T_{N, p}(\rho_{N+1})(\alpha_{N, p}, \beta_{N, p})^\intercal = H_p \beta_{N+1, p} + (c_p\frj_p(k\, r), c_p k \frj_p'(k\, r))^\intercal$ where
+\begin{equation}
+    H_p = \begin{pmatrix}
+        \frh_p(k\, \rho_{N+1}) \\[1ex]
+        k{\frh_p}'(k\, \rho_{N+1})
+    \end{pmatrix} \in \calM_{2, 1}(\bbC).
+\end{equation}
+In the impenetrable cases the Dirichlet or Neumann conditions give $T_{1, p}^{\calD/\calN} (\alpha_{1, p}, \beta_{1, p})^\intercal = \vect{0}_{2, 1}$ where
 \[
-    M_{N, p}^\calD = \begin{pmatrix}
-        f_{0, p}(\rho_1)  & g_{0, p}(\rho_1)                                                                                                                          \\
-        f_{1, p}(\rho_2)  & g_{1, p}(\rho_2)  & -f_{2, p}(\rho_2)  & -g_{2, p}(\rho_2)                                                                                \\
-        f_{1, p}'(\rho_2) & g_{1, p}'(\rho_2) & -f_{2, p}'(\rho_2) & -g_{2, p}'(\rho_2)                                                                               \\
-        \\
-        \\
-                          &                   &                    &                    & f_{N, p}(\rho_{N+1})  & g_{N, p}(\rho_{N+1})  & \frh_p(k\, \rho_{N+1})      \\
-                          &                   &                    &                    & f_{N, p}'(\rho_{N+1}) & g_{N, p}'(\rho_{N+1}) & -k{\frh_p}'(k\, \rho_{N+1})
-    \end{pmatrix}
+    T_{1, p}^\calD = \begin{pmatrix}
+        f_{0, p}(\rho_1) & g_{0, p}(\rho_1)
+    \end{pmatrix} \in \calM_{1, 2}(\bbC), \quad
+    \text{and} \quad
+    T_{1, p}^\calN = \begin{pmatrix}
+        f_{0, p}'(\rho_1) & g_{0, p}'(\rho_1)
+    \end{pmatrix} \in \calM_{1, 2}(\bbC).
+\]
+In addition, we define
+\[
+    J_{q, p} = (0, \ldots, 0, c_p\frj_p(k\, r), c_p k \frj_p'(k\, r))^\intercal \in \bbC^{q}.
+\]
+For the Dirichlet or Neumann case, the coefficient $\alpha_{1, p}, \beta_{1, p}, \ldots, \alpha_{N, p}, \beta_{N, p}$, and $\beta_{N+1, p}$ are solution of the system
+\[
+    M_{N, p}^{\calD/\calN} (\alpha_{1, p}, \beta_{1, p}, \ldots, \alpha_{N, p}, \beta_{N, p}, \beta_{N+1, p})^\intercal = J_{2N+1, p}
+\]
+where
+\[
+    M_{N, p}^{\calD/\calN} = \begin{pmatrix*}[r]
+        T_{1, p}^{\calD/\calN}(\rho_1)\\
+        T_{1, p}(\rho_2) & -T_{2, p}(\rho_2)\\
+        & T_{2, p}(\rho_3) & -T_{3, p}(\rho_3)\\
+        & \ddots & \ddots\\
+        & & T_{N-1, p}(\rho_N) & -T_{N, p}(\rho_N)\\
+        & & & T_{N, p}(\rho_{N+1}) & H_p
+    \end{pmatrix*} \in \calM_{2N+1}(\bbC).
+\]
+For the penetrable case, the coefficient $\alpha_{0, p}$, $\alpha_{1, p}, \beta_{1, p}, \ldots, \alpha_{N, p}, \beta_{N, p}$, and $\beta_{N+1, p}$ are solution of the system
+\[
+    M_{N, p}^\calP (\alpha_{0, p}, \alpha_{1, p}, \beta_{1, p}, \ldots, \alpha_{N, p}, \beta_{N, p}, \beta_{N+1, p})^\intercal = J_{2N+1, p}
+\]
+where
+\[
+    M_{N, p}^\calP = \begin{pmatrix*}[r]
+        T_{0, p}(\rho_1) & -T_{1, p}(\rho_1)\\
+        & T_{1, p}(\rho_2) & -T_{2, p}(\rho_2)\\
+        & & T_{2, p}(\rho_3) & -T_{3, p}(\rho_3)\\
+        & & \ddots & \ddots\\
+        & & & T_{N-1, p}(\rho_N) & -T_{N, p}(\rho_N)\\
+        & & & & T_{N, p}(\rho_{N+1}) & H_p
+    \end{pmatrix*} \in \calM_{2N+2}(\bbC).
 \]
 
 %===========================
@@ -397,18 +456,18 @@ In dimension two, the Cartesian coordinate $\vx = (x, y) \in \bbR^2$ are describ
 \subsubsection{Spherical}
 %
 
-In dimension three, the Cartesian coordinate $\vx = (x, y, z) \in \bbR^3$ are describe in term of spherical coordinate $(r, \theta, \phi) \in \bbR_+ \times [0, \pi] \times \bbR / 2\pi\bbZ$ by
+In dimension three, the Cartesian coordinate $\vx = (x, y, z) \in \bbR^3$ are describe in term of spherical coordinate $(r, \theta, \phi) \in \bbR_+ \times \bbR / 2\pi\bbZ \times [0, \pi]$ by
 \[
     \begin{dcases}
-        x = r \sin(\theta) \cos(\phi) \\
+        x = r \cos(\theta) \sin(\phi) \\
         y = r \sin(\theta) \sin(\phi) \\
-        z = r \cos(\theta)
+        z = r \cos(\phi)
     \end{dcases} \qquad
     \text{and} \qquad
     \begin{dcases}
-        r = \sqrt{x^2 + y^2 + z^2}        \\
-        \theta = \arccos\plr{\frac{z}{r}} \\
-        \phi = \arg(x + \im y)
+        r = \sqrt{x^2 + y^2 + z^2} \\
+        \theta = \arg(x + \im y)   \\
+        \phi = \arccos\plr{\frac{z}{r}}
     \end{dcases}.
 \]
 
@@ -450,7 +509,7 @@ where the couples $(\mathsf{f}, \mathsf{F})$ are $(\bj, \bJ)$, $(\by, \bY)$, $(\
 For $\ell \in \bbN$ and $m \in \{-\ell, \ldots, 0, \ldots, \ell\}$, the spherical harmonic $Y_\ell^m$ in the spherical coordinate is define by
 \[
     Y_\ell^m(\theta, \phi) = \sqrt{\frac{2\ell+1}{4\pi}\, \frac{(\ell-m)!
-        }{(\ell+m)!}}\, P_\ell^m(\cos(\theta))\, \ex^{\im\, m\, \phi}
+        }{(\ell+m)!}}\, \ex^{\im\, m\, \theta}\, P_\ell^m(\cos(\phi))
 \]
 where $P_\ell^m$ are the associated Legendre polynomial define by
 \[
@@ -474,143 +533,17 @@ where $(x, y)$ are the Cartesian coordinates and $(r, \theta)$ the corresponding
 
 \bigskip
 
-For a 3d plane wave of direction $\vect{\nu} \in \bbS^2$ and wavenumber $k > 0$, we have the following expansion
+For a 3d plane wave of direction $\vect{\nu} = (1, \nu_\theta, \nu_\phi)^\intercal \in \bbS^2$ and wavenumber $k > 0$, we have the following expansion
 \[
-    \ex^{\im\, k\, \vect{\nu} \cdot \vx} = 4\pi \sum_{\ell = 0}^{+\infty} \im^\ell\, \bj_\ell(k\, r) \sum_{m = -\ell}^\ell \overline{Y_\ell^m(\vect{\nu})} Y_\ell^m(\omega)
+    \ex^{\im\, k\, \vect{\nu} \cdot \vx} = 4\pi \sum_{\ell = 0}^{+\infty} \im^\ell\, \bj_\ell(k\, r) \sum_{m = -\ell}^\ell \overline{Y_\ell^m(\nu_\theta, \nu_\phi)}\, Y_\ell^m(\theta, \phi)
 \]
-where $(x, y)$ are the Cartesian coordinates and $(r, \theta)$ the corresponding polar coordinates.
-For the particular direction $\vect{\nu} = (0, 0, 1)^\intercal$ we obtain
+where $\vx = (x, y, z)$ are the Cartesian coordinates and $(r, \theta, \phi)$ the corresponding spherical coordinates.
+For the particular direction $\vect{\nu} = (0, 0, 1)^\intercal$ in Cartesian coordinates or $\vect{\nu} = (1, 0, 0)^\intercal$ in spherical coordinates, we obtain
 \begin{equation}\label{eq:wave_expan_3}
-    \ex^{\im\, k\, z} = \sum_{\ell = 0}^{+\infty} \im^\ell \,\sqrt{4\pi(2\ell+1)}\, \bj_\ell(k\, r)\, Y_\ell^0(\omega).
+    \ex^{\im\, k\, z} = \sum_{\ell = 0}^{+\infty} \im^\ell \,\sqrt{4\pi(2\ell+1)}\, \bj_\ell(k\, r)\, Y_\ell^0(\theta, \phi).
 \end{equation}
 
 \bibliographystyle{alpha}
 \bibliography{references}
-
-%##############################################################################
-\newpage
-%##############################################################################
-
-%============================
-\section{Disk cavities with constant optical parameters}
-%============================
-
-\paragraph{Solution of the scattering problem.}
-In this section, we assume that the cavity is the unit disk $\bbD$ and that $\ecav$ and $\mcav$ are non zero constant in $[0, 1]$.
-The solution of problem  for $0 < r < 1$ depend of the sign of $\ecav\mcav$.
-We denote by $C_m$ the function
-\[
-    C_m(z) = \begin{dcases}
-        \bJ_m(\sqrt{\ecav\mcav}\, z)  & \text{if } \Re(\ecav\mcav) > 0 \\
-        \bI_m(\sqrt{-\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) < 0
-    \end{dcases}
-\]
-where $z \mapsto \bI_m(z)$ is the modified Bessel of the first kind.
-The solution of problem  is
-\begin{equation}
-    w_m(r) = \begin{dcases}
-        a_m\, C_m(k\, r)                  & \text{if } r \le 1 \\
-        b_m\, \Hu_m(k\, r) + \bJ_m(k\, r) & \text{if } r > 1
-    \end{dcases}
-\end{equation}
-where $(a_m, b_m)$ are solution of
-\begin{equation}
-    \begin{pmatrix*}[r]
-        C_m(k) & -\Hu_m(k)\\[1ex]
-        \ecav^{-1}\, C_m'(k) & -{\Hu_m}'(k)
-    \end{pmatrix*}
-    \begin{pmatrix}
-        a_m \\[1ex]
-        b_m
-    \end{pmatrix} =
-    \begin{pmatrix}
-        \bJ_m(k) \\[1ex]
-        \bJ_m'(k)
-    \end{pmatrix}.
-\end{equation}
-
-\paragraph{Solution of the resonance problem.}
-A resonances $\ell$ is a complex satisfying
-\begin{equation}
-    \ecav^{-1}\, C_m'(\ell) \Hu_m(\ell) - C_m(\ell) {\Hu_m}'(\ell) = 0
-\end{equation}
-with the associated mode
-\begin{equation}
-    w_\ell(r) = \begin{dcases}
-        C_m(k\, r)                           & \text{if } r \le 1 \\
-        \tfrac{C_m(k)}{\Hu_m(k)}\Hu_m(k\, r) & \text{if } r > 1
-    \end{dcases}.
-\end{equation}
-
-%============================
-\section{Annulus cavities}
-%============================
-
-\paragraph{Solution of the scattering problem.}
-In this section, we assume that the cavity is the annulus $\bbA_\delta = \{\vx \in \bbR^2 \mid \delta < |\vx| < 1\}$ with $0 < \delta < 1$ and that $\ecav$ and $\mcav$ are non zero constant in $[0, 1]$.
-The solution of problem  for $\delta < r < 1$ depend of the sign of $\ecav\mcav$ and are denoted by $C_m$ and $D_m$.
-The solution of problem  is
-\begin{equation}
-    w_m(r) = \begin{dcases}
-        a_m\, \bJ_m(k\, r)                  & \text{if } 0 \le r < \delta   \\
-        b_m\, C_m(k\, r) + c_m\, D_m(k\, r) & \text{if } \delta \le r \le 1 \\
-        d_m\, \Hu_m(k\, r) + \bJ_m(k\, r)   & \text{if } r > 1
-    \end{dcases}
-\end{equation}
-where $(a_m, b_m, c_m, d_m)$ are solution of
-\begin{equation}
-    \begin{pmatrix*}[r]
-        -\bJ_m(k\delta) & C_m(k\delta) & D_m(k\delta) & 0\\[1ex]
-        -\bJ_m'(k\delta) & \ecav^{-1}\, C_m'(k\delta) & \ecav^{-1}\, D_m'(k\delta) & 0\\[1ex]
-        0 & C_m(k) & D_m(k) & -\Hu_m(k)\\[1ex]
-        0 & \ecav^{-1}\, C_m'(k) & \ecav^{-1}\, D_m'(k) & -{\Hu_m}'(k)
-    \end{pmatrix*}
-    \begin{pmatrix}
-        a_m \\[1ex]
-        b_m \\[1ex]
-        c_m \\[1ex]
-        d_m
-    \end{pmatrix} =
-    \begin{pmatrix}
-        0        \\[1ex]
-        0        \\[1ex]
-        \bJ_m(k) \\[1ex]
-        \bJ_m'(k)
-    \end{pmatrix}.
-\end{equation}
-
-\paragraph{Solution of the resonance problem.}
-A resonances $\ell$ is a complex satisfying
-\begin{equation}
-    \ecav^{-1}\, C_m'(\ell) \Hu_m(\ell) - C_m(\ell) {\Hu_m}'(\ell) = 0
-\end{equation}
-with the associated mode
-\begin{equation}
-    w_\ell(r) = \begin{dcases}
-        C_m(k\, r)                           & \text{if } r \le 1 \\
-        \tfrac{C_m(k)}{\Hu_m(k)}\Hu_m(k\, r) & \text{if } r > 1
-    \end{dcases}.
-\end{equation}
-
-% = = = = = = = = = = = = = =
-\subsection{Constant optical parameters}
-% = = = = = = = = = = = = = =
-
-\[
-    C_m(z) = \begin{dcases}
-        \bJ_m(\sqrt{\ecav\mcav}\, z)  & \text{if } \Re(\ecav\mcav) > 0 \\
-        \bI_m(\sqrt{-\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) < 0
-    \end{dcases} \quad
-    \text{and} \quad
-    D_m(z) = \begin{dcases}
-        \bY_m(\sqrt{\ecav\mcav}\, z)  & \text{if } \Re(\ecav\mcav) > 0 \\
-        \bK_m(\sqrt{-\ecav\mcav}\, z) & \text{if } \Re(\ecav\mcav) < 0
-    \end{dcases}
-\]
-where $z \mapsto \bK_m(z)$ is the modified Bessel of the second kind.
-
-% = = = = = = = = = = = = = =
-\subsection{The flat well version}
-% = = = = = = = = = = = = = =
 
 \end{document}

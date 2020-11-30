@@ -3,7 +3,8 @@ from numpy.random import uniform
 from numpy.testing import assert_allclose
 
 import claudius
-from claudius.Helmholtz_3d import create_problem_cst
+from claudius.Helmholtz_3d import (create_problem_cst, incident_field, scattered_field,
+                                   total_field)
 
 
 def coeff_serie(l):
@@ -16,9 +17,7 @@ def _sol(inn_bdy, radii_list, εμ_list, k):
         for radii, εμ in zip(radii_list, εμ_list)
     ]
 
-    M = claudius.trunc_H3d(k, 3)
-
-    return [claudius.solve_prob(pb, M) for pb in pb_list]
+    return [claudius.solve_prob(pb, T=3) for pb in pb_list]
 
 
 class TestImpenetrable:
@@ -39,12 +38,8 @@ class TestImpenetrable:
                 linspace(0, pi, num=6)[1:-1],
             )
             R, T, P = meshgrid(r, t, p)
-            us0, ut0 = claudius.sc_field(sol0, R, T, P), claudius.tt_field(
-                sol0, R, T, P
-            )
-            us1, ut1 = claudius.sc_field(sol1, R, T, P), claudius.tt_field(
-                sol0, R, T, P
-            )
+            us0, ut0 = scattered_field(sol0, R, T, P), total_field(sol0, R, T, P)
+            us1, ut1 = scattered_field(sol1, R, T, P), total_field(sol0, R, T, P)
 
             assert assert_allclose(us0, us1, atol=5e-6) is None
             assert assert_allclose(ut0, ut1, atol=5e-6) is None
@@ -66,12 +61,8 @@ class TestImpenetrable:
                 linspace(0, pi, num=6)[1:-1],
             )
             R, T, P = meshgrid(r, t, p)
-            us0, ut0 = claudius.sc_field(sol0, R, T, P), claudius.tt_field(
-                sol0, R, T, P
-            )
-            us1, ut1 = claudius.sc_field(sol1, R, T, P), claudius.tt_field(
-                sol0, R, T, P
-            )
+            us0, ut0 = scattered_field(sol0, R, T, P), total_field(sol0, R, T, P)
+            us1, ut1 = scattered_field(sol1, R, T, P), total_field(sol0, R, T, P)
 
             assert assert_allclose(us0, us1, rtol=5e-6) is None
             assert assert_allclose(ut0, ut1, rtol=5e-6) is None
@@ -100,7 +91,6 @@ class TestPenetrable:
             sol0, sol1 = _sol(
                 "Penetrable", [(1,), (1, 2)], [((1, 1),), ((1, 1), (1, 1))], k
             )
-            c0, c1 = sol0.coeff, sol1.coeff
 
             r, t, p = (
                 linspace(1, 3, num=8),
@@ -108,13 +98,9 @@ class TestPenetrable:
                 linspace(0, pi, num=6)[1:-1],
             )
             R, T, P = meshgrid(r, t, p)
-            us0, ut0 = claudius.sc_field(sol0, R, T, P), claudius.tt_field(
-                sol0, R, T, P
-            )
-            us1, ut1 = claudius.sc_field(sol1, R, T, P), claudius.tt_field(
-                sol0, R, T, P
-            )
-            ui = claudius.Helmholtz_3d.incident_field(k, R, T, P, "spherical")
+            us0, ut0 = scattered_field(sol0, R, T, P), total_field(sol0, R, T, P)
+            us1, ut1 = scattered_field(sol1, R, T, P), total_field(sol0, R, T, P)
+            ui = incident_field(k, R, T, P)
 
             assert assert_allclose(ui + us0, ut0, rtol=5e-6) is None
             assert assert_allclose(ui + us1, ut1, rtol=5e-6) is None
