@@ -87,9 +87,9 @@ def _calc_mat(shape, m, ρ, εμ, fun, fun_der, shift):
     return A
 
 
-def solve_prob(prob, M=None, T=None):
+def solve_prob(prob, trunc_series=None, radius_max=None):
     """
-    sol = solve_prob(prob, M=None, T=None)
+    sol = solve_prob(prob, trunc_series=None, radius_max=None)
 
     Comptute the coefficients of the series solution.
 
@@ -97,9 +97,9 @@ def solve_prob(prob, M=None, T=None):
     ----------
     prob : Problem
         Problem dataclass
-    M : integer (optional)
+    trunc_series : integer (optional)
         Truncature of the series
-    T : float (optional)
+    radius_max : float (optional)
         Radius maximum
 
     Returns
@@ -108,16 +108,16 @@ def solve_prob(prob, M=None, T=None):
         Solution dataclass
     """
 
-    M_is_None, T_is_None = M is None, T is None
+    M_is_None, T_is_None = trunc_series is None, radius_max is None
     if (M_is_None and T_is_None) or ((not M_is_None) and (not T_is_None)):
-        raise ValueError("You need to specify M or T but not both.")
+        raise ValueError("You need to specify trunc_series or radius_max but not both.")
 
-    if T is not None:
-        M = _choose_trunc(prob.dim, prob.pde, prob.wavenum * T)
+    if radius_max is not None:
+        trunc_series = _choose_trunc(prob.dim, prob.pde, prob.wavenum * radius_max)
 
-    if M is not None:
-        if M < 0:
-            raise ValueError(f"The integer {M} should be non-negative.")
+    if trunc_series is not None:
+        if trunc_series < 0:
+            raise ValueError(f"The integer {trunc_series} should be non-negative.")
 
     ρ = prob.radii
     εμ = prob.eps_mu
@@ -128,11 +128,11 @@ def solve_prob(prob, M=None, T=None):
     fj0, fj1 = _plane_wave(prob.dim, prob.pde, k)
 
     N = len(prob.radii) - 1  # Number of layers
-    m = arange(M + 1)
+    m = arange(trunc_series + 1)
 
     if prob.inn_bdy.startswith("P"):
         if N == 0:
-            A = zeros((M + 1, 2, 2), dtype=complex)
+            A = zeros((trunc_series + 1, 2, 2), dtype=complex)
 
             A[:, 0, 0] = fun[0](m, ρ[0])
             A[:, 0, 1] = -fun[1](m, ρ[0])
@@ -142,7 +142,7 @@ def solve_prob(prob, M=None, T=None):
 
         else:
             nbi = 2 * len(ρ)
-            A = zeros((M + 1, nbi, nbi), dtype=complex)
+            A = zeros((trunc_series + 1, nbi, nbi), dtype=complex)
 
             A[:, 0, 0] = fun[0](m, ρ[0])
             A[:, 0, 1] = -fun[1][0](m, ρ[0])
@@ -153,7 +153,7 @@ def solve_prob(prob, M=None, T=None):
             A[:, 1, 2] = -fun_der[1][1](m, ρ[0]) / εμ[1][0](ρ[0])
 
             A[:, 2:, 1:] = _calc_mat(
-                (M + 1, nbi - 2, nbi - 1), m, ρ, εμ, fun, fun_der, 1
+                (trunc_series + 1, nbi - 2, nbi - 1), m, ρ, εμ, fun, fun_der, 1
             )
 
     else:
@@ -168,7 +168,7 @@ def solve_prob(prob, M=None, T=None):
             )
 
         nbi = 2 * len(ρ) - 1
-        A = zeros((M + 1, nbi, nbi), dtype=complex)
+        A = zeros((trunc_series + 1, nbi, nbi), dtype=complex)
 
         if prob.inn_bdy.startswith("D"):
             A[:, 0, 0] = fun[0][0](m, ρ[0])
@@ -177,9 +177,11 @@ def solve_prob(prob, M=None, T=None):
             A[:, 0, 0] = fun_der[0][0](m, ρ[0])
             A[:, 0, 1] = fun_der[0][1](m, ρ[0])
 
-        A[:, 1:, :] = _calc_mat((M + 1, nbi - 1, nbi), m, ρ, εμ, fun, fun_der, 0)
+        A[:, 1:, :] = _calc_mat(
+            (trunc_series + 1, nbi - 1, nbi), m, ρ, εμ, fun, fun_der, 0
+        )
 
-    F = zeros((M + 1, size(A, 1)), dtype=complex)
+    F = zeros((trunc_series + 1, size(A, 1)), dtype=complex)
     F[:, -2] = fj0(m, ρ[-1])
     F[:, -1] = fj1(m, ρ[-1])
 

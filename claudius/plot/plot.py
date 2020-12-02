@@ -20,15 +20,20 @@ def _calc_εμ(prob, penetrable, shift):
         vε.append(εμ[n][0](r))
         vμ.append(εμ[n][1](r))
 
-    ymin = min(*[amin(ε) for ε in vε], *[amin(μ) for μ in vμ], 1)
+    if len(vε):
+        ymin = min(*[amin(ε) for ε in vε], *[amin(μ) for μ in vμ], 1)
+        ymax = max(*[amax(ε) for ε in vε], *[amax(μ) for μ in vμ], 1)
+    else:
+        ymin, ymax = 1, 1
     ymin = 0.95 * ymin if ymin > 0 else 1.05 * ymin
-    ymax = 1.05 * max(*[amax(ε) for ε in vε], *[amax(μ) for μ in vμ], 1)
+    ymax = 1.05 * ymax
 
     return (vr, vε, vμ, (ymin, ymax))
 
 
 def plot_geometry(prob, T=None):
     penetrable = prob.inn_bdy.startswith("P")
+    ρ = prob.radii
 
     if T is None:
         T = 1.5 * prob.radii[-1]
@@ -48,18 +53,18 @@ def plot_geometry(prob, T=None):
     ax[1].grid(True)
 
     if penetrable:
-        ax[0].add_artist(Circle((0, 0), vr[0][0], fill=False, ec="k", lw=2, ls="--"))
+        ax[0].add_artist(Circle((0, 0), ρ[0], fill=False, ec="k", lw=2, ls="--"))
 
-        ax[1].plot([vr[0][0], vr[0][0]], [εμmin, εμmax], "k--")
+        ax[1].plot([ρ[0], ρ[0]], [εμmin, εμmax], "k--")
         ax[1].plot(vr[0], vε[0], "C0", lw=2)
         ax[1].plot(vr[0], vμ[0], "C1--", lw=2)
     else:
-        ax[0].add_artist(Circle((0, 0), vr[0][0], fc=(0.75, 0.75, 0.75), ec="k", lw=2))
+        ax[0].add_artist(Circle((0, 0), ρ[0], fc=(0.75, 0.75, 0.75), ec="k", lw=2))
 
         ax[1].add_artist(
-            Rectangle((0, εμmin), vr[0][0], εμmax - εμmin, fc=(0.75, 0.75, 0.75))
+            Rectangle((0, εμmin), ρ[0], εμmax - εμmin, fc=(0.75, 0.75, 0.75))
         )
-        ax[1].plot([vr[0][0], vr[0][0]], [εμmin, εμmax], "k")
+        ax[1].plot([ρ[0], ρ[0]], [εμmin, εμmax], "k")
 
     for r_, ε_, μ_ in zip(vr[shift:], vε[shift:], vμ[shift:]):
         ax[0].add_artist(Circle((0, 0), r_[-1], fill=False, ec="k", lw=2, ls="--"))
@@ -68,8 +73,8 @@ def plot_geometry(prob, T=None):
         ax[1].plot(r_, ε_, "C0", lw=2)
         ax[1].plot(r_, μ_, "C1--", lw=2)
 
-    ax[1].plot([vr[-1][-1], T], [1, 1], "C0", lw=2, label="ε")
-    ax[1].plot([vr[-1][-1], T], [1, 1], "C1--", lw=2, label="μ")
+    ax[1].plot([ρ[-1], T], [1, 1], "C0", lw=2, label="ε")
+    ax[1].plot([ρ[-1], T], [1, 1], "C1--", lw=2, label="μ")
 
     ax[1].legend()
 
@@ -78,6 +83,7 @@ def plot_geometry(prob, T=None):
 
 def plot_potential(prob, λ, Vlim=None, T=None):
     penetrable = prob.inn_bdy.startswith("P")
+    ρ = prob.radii
 
     if T is None:
         T = 1.5 * prob.radii[-1]
@@ -97,9 +103,13 @@ def plot_potential(prob, λ, Vlim=None, T=None):
             vλ.append(-λ)
 
     if Vlim is None:
-        Vmin = min(*[amin(V) for V in vV], *[σ for σ in vλ], 1 / (T * T))
+        if len(vV):
+            Vmin = min(*[amin(V) for V in vV], *[σ for σ in vλ], 0)
+            Vmax = max(*[amax(V) for V in vV], *[σ for σ in vλ], 1 / (ρ[-1] * ρ[-1]))
+        else:
+            Vmin, Vmax = min(λ, 0), max(λ, 1 / (ρ[-1] * ρ[-1]))
         Vmin = 0.95 * Vmin if Vmin > 0 else 1.05 * Vmin
-        Vmax = 1.05 * max(*[amax(V) for V in vV], λ, 1 / (vr[-1][-1] * vr[-1][-1]))
+        Vmax = 1.05 * Vmax
     else:
         Vmin, Vmax = Vlim
 
@@ -114,23 +124,21 @@ def plot_potential(prob, λ, Vlim=None, T=None):
     ax[1].grid(True)
 
     if penetrable:
-        ax[0].plot([vr[0][0], vr[0][0]], [εμmin, εμmax], "k--")
+        ax[0].plot([ρ[0], ρ[0]], [εμmin, εμmax], "k--")
         ax[0].plot(vr[0], vε[0], "C0", lw=2)
         ax[0].plot(vr[0], vμ[0], "C1--", lw=2)
 
-        ax[1].plot([vr[0][0], vr[0][0]], [Vmin, Vmax], "k--")
+        ax[1].plot([ρ[0], ρ[0]], [Vmin, Vmax], "k--")
         ax[1].plot(vr[0], vV[0], "C3", lw=2)
-        ax[1].plot([0, vr[0][0]], [vλ[0], vλ[0]], "C2", lw=2)
+        ax[1].plot([0, ρ[0]], [vλ[0], vλ[0]], "C2", lw=2)
     else:
         ax[0].add_artist(
-            Rectangle((0, εμmin), vr[0][0], εμmax - εμmin, fc=(0.75, 0.75, 0.75))
+            Rectangle((0, εμmin), ρ[0], εμmax - εμmin, fc=(0.75, 0.75, 0.75))
         )
-        ax[0].plot([vr[0][0], vr[0][0]], [εμmin, εμmax], "k")
+        ax[0].plot([ρ[0], ρ[0]], [εμmin, εμmax], "k")
 
-        ax[1].add_artist(
-            Rectangle((0, Vmin), vr[0][0], Vmax - Vmin, fc=(0.75, 0.75, 0.75))
-        )
-        ax[1].plot([vr[0][0], vr[0][0]], [Vmin, Vmax], "k")
+        ax[1].add_artist(Rectangle((0, Vmin), ρ[0], Vmax - Vmin, fc=(0.75, 0.75, 0.75)))
+        ax[1].plot([ρ[0], ρ[0]], [Vmin, Vmax], "k")
 
     for r_, ε_, μ_, V_, λ_ in zip(
         vr[shift:], vε[shift:], vμ[shift:], vV[shift:], vλ[shift:]
@@ -143,14 +151,14 @@ def plot_potential(prob, λ, Vlim=None, T=None):
         ax[1].plot(r_, V_, "C3", lw=2)
         ax[1].plot([r_[0], r_[-1]], [λ_, λ_], "C2", lw=2)
 
-    ax[0].plot([vr[-1][-1], T], [1, 1], "C0", lw=2, label="ε")
-    ax[0].plot([vr[-1][-1], T], [1, 1], "C1--", lw=2, label="μ")
+    ax[0].plot([ρ[-1], T], [1, 1], "C0", lw=2, label="ε")
+    ax[0].plot([ρ[-1], T], [1, 1], "C1--", lw=2, label="μ")
 
     ax[0].legend()
 
-    r = linspace(vr[-1][-1], T, num=int(128 * (T - vr[-1][-1]) / T))
+    r = linspace(ρ[-1], T, num=int(128 * (T - ρ[-1]) / T))
     ax[1].plot(r, 1 / (r * r), "C3", lw=2, label="V")
-    ax[1].plot([vr[-1][-1], T], [λ, λ], "C2", lw=2, label="λ")
+    ax[1].plot([ρ[-1], T], [λ, λ], "C2", lw=2, label="λ")
 
     ax[1].legend()
 

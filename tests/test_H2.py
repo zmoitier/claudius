@@ -13,7 +13,21 @@ def _sol(inn_bdy, radii_list, εμ_list, k):
         for radii, εμ in zip(radii_list, εμ_list)
     ]
 
-    return [claudius.solve_prob(pb, T=3) for pb in pb_list]
+    return [claudius.solve_prob(pb, radius_max=3) for pb in pb_list]
+
+
+class TestSolve:
+    def test_solve_D(self):
+        pb = create_problem_cst("Dirichlet", (0.5, 1, 1.5), ((-2, 1), (1, 2)), 1)
+        assert claudius.solve_prob(pb, trunc_series=1)
+
+    def test_solve_N(self):
+        pb = create_problem_cst("Neumann", (0.5, 1, 1.5), ((-2, 1), (1, 2)), 1)
+        assert claudius.solve_prob(pb, trunc_series=1)
+
+    def test_solve_P(self):
+        pb = create_problem_cst("Penetrable", (0.5, 1), ((-2, 1), (1, 2)), 1)
+        assert claudius.solve_prob(pb, trunc_series=1)
 
 
 class TestImpenetrable:
