@@ -27,7 +27,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install pytest flit black isort
-        flit install 
+        flit install
     - name: Reformat and checkk no diff was introduced.
       run: |
         bash ./format.sh
