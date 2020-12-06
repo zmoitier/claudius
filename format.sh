@@ -1,2 +1,2 @@
 black .;
-isort -w 88 .;
+isort .;

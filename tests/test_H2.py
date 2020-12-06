@@ -3,8 +3,12 @@ from numpy.random import uniform
 from numpy.testing import assert_allclose
 
 import claudius
-from claudius.Helmholtz_2d import (create_problem_cst, incident_field, scattered_field,
-                                   total_field)
+from claudius.Helmholtz_2d import (
+    create_problem_cst,
+    incident_field,
+    scattered_field,
+    total_field,
+)
 
 
 def _sol(inn_bdy, radii_list, εμ_list, k):
