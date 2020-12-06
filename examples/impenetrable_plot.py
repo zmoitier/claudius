@@ -6,7 +6,6 @@ import claudius
 from claudius.plot import plot_field, plot_geometry
 
 
-
 def impenetrable(dim, pde, inn_bdy, k, T, which, N=128):
 
     C1, C2 = np.meshgrid(np.linspace(-T, T, num=N), np.linspace(-T, T, num=N))
