@@ -10,7 +10,7 @@ The word _claudius_ is an acronym for _CaLculs AnalytiqUes pour la DIffUSion des
 
 - require: [Numba](https://github.com/numba/numba), [NumPy](https://github.com/numpy/numpy), and [SciPy](https://github.com/scipy/scipy)
 - optional: [Matplotlib](https://github.com/matplotlib/matplotlib) (it is only use for plotting)
-- development: [black](https://github.com/psf/black), [isort](https://github.com/PyCQA/isort), [pytest](https://github.com/pytest-dev/pytest), and [pytest-cov](https://github.com/pytest-dev/pytest-cov)
+- development: [black](https://github.com/psf/black), [isort](https://github.com/PyCQA/isort), [pytest](https://github.com/pytest-dev/pytest), and [pytest-cov](https://github.com/pytest-dev/pytest-cov), flit, Sphinx, Sphinx-Gallery
 
 ## Install
 
