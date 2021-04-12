@@ -3,28 +3,12 @@ from sys import argv
 import matplotlib.pyplot as plt
 import numpy as np
 
-import claudius
-from claudius.Helmholtz_3d import fun_cst, fun_cst_der
+import claudius_dev as claudius
 
-dim = 3
-pde = "H"
-inn_bdy = "P"
-N = int(argv[1])
-k = 5
+obs = claudius.create_obstacle("Disk", "Penetrable", [1, 2], [1, 2], [3, 4])
+print(obs)
 
-if N == 0:
-    radii = (1,)
-else:
-    radii = tuple(np.linspace(1, 1.5, num=N + 1))
-
-if inn_bdy.startswith("P"):
-    εμc = tuple((1, 1) for n in range(N + 1))
-    fun = (fun_cst(1, 1, k)[0], *(fun_cst(1, 1, k) for n in range(N)))
-    fun_der = (fun_cst_der(1, 1, k)[0], *(fun_cst_der(1, 1, k) for n in range(N)))
-else:
-    εμc = tuple((1, 1) for n in range(N))
-    fun = tuple(fun_cst(1, 1, k) for n in range(N))
-    fun_der = tuple(fun_cst_der(1, 1, k) for n in range(N))
-
-prob = claudius.create_probem(dim, pde, inn_bdy, radii, εμc, k, fun, fun_der)
-sol = claudius.solve_prob(prob, T=2)
+print(obs.sig_rho[0][0](np.zeros(5)))
+print(obs.sig_rho[0][1](np.zeros(5)))
+print(obs.sig_rho[1][0](np.zeros(5)))
+print(obs.sig_rho[1][1](np.zeros(5)))
